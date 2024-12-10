@@ -22,6 +22,7 @@ public:
 	LRESULT CALLBACK MemberWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	inline IT_Renderer* GetRenderer() { return m_renderer; }
+	inline HWND GetHwnd() { return m_hwnd; }
 
 private:
 	bool InitWindow();

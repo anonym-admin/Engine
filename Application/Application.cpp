@@ -97,7 +97,7 @@ LRESULT Application::MemberWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 	break;
 	case WM_KEYDOWN:
 	{
-		int32 keyCode = wParam;
+		int32 keyCode = (int32)wParam;
 		if (keyCode == VK_ESCAPE)
 		{
 			::PostQuitMessage(998);

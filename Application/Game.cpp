@@ -43,6 +43,12 @@ void Game::RunGame()
 {
     IT_Renderer* renderer = m_app->GetRenderer();
 
+    static uint32 fps = 0;
+    static uint64 prevTickCount = 0;
+
+    fps++;
+   
+    uint64 curTickCount = ::GetTickCount64();
     Update();
 
     renderer->BeginRender();
@@ -50,6 +56,18 @@ void Game::RunGame()
     renderer->EndRender();
 
     renderer->Present();
+
+    if (curTickCount - prevTickCount > 1000)
+    {
+        m_fps = fps;
+        fps = 0;
+        prevTickCount = curTickCount;
+        
+        wchar_t buf[36] = {};
+        swprintf_s(buf, L"fps: %d", m_fps);
+        ::SetWindowText(m_app->GetHwnd(), buf);
+    }
+
 }
 
 void Game::Update()

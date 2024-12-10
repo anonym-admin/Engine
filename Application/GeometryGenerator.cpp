@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "GeometryGenerator.h"
 
+/*
+===================
+Geometry Generator
+===================
+*/
+
 MESH_GROUP_HANDLE* GeometryGenerator::MakeTriagle()
 {
 	MESH_GROUP_HANDLE* meshGroup = new MESH_GROUP_HANDLE;

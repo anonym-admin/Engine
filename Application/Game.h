@@ -26,5 +26,7 @@ private:
 private:
 	Application* m_app = nullptr;
 	Actor* m_actor = nullptr;
+
+	uint32 m_fps = 0;
 };
 
