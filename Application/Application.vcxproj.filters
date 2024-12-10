@@ -13,6 +13,9 @@
     <Filter Include="Main">
       <UniqueIdentifier>{0dde2e36-cef7-4e88-8b68-c399e7de8138}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{5b1714da-5d9e-4cea-94ab-6d9c4ae036f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainEntry.cpp">
@@ -25,6 +28,12 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
       <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
@@ -42,6 +51,18 @@
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\MeshData.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Vertex.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
       <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>

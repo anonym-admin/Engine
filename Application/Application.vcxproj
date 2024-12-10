@@ -147,8 +147,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="MainEntry.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -158,10 +160,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Common\MeshData.h" />
     <ClInclude Include="..\..\Common\Type.h" />
+    <ClInclude Include="..\..\Common\Vertex.h" />
     <ClInclude Include="..\..\Interface\IT_Renderer.h" />
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

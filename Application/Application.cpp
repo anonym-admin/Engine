@@ -53,6 +53,7 @@ void Application::CleanUp()
 {
 	if (m_game)
 	{
+		m_game->CleanUpGame();
 		delete m_game;
 		m_game = nullptr;
 	}
@@ -96,6 +97,11 @@ LRESULT Application::MemberWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 	break;
 	case WM_KEYDOWN:
 	{
+		int32 keyCode = wParam;
+		if (keyCode == VK_ESCAPE)
+		{
+			::PostQuitMessage(998);
+		}
 	}
 	break;
 	case WM_KEYUP:

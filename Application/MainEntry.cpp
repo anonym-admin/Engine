@@ -37,5 +37,5 @@ int main(int argc, char* argv[])
 	_ASSERT(_CrtCheckMemory());
 #endif
 
-	return 0;
+	return exitCode;
 }

@@ -7,6 +7,7 @@ Game
 */
 
 class Application;
+class Actor;
 
 class Game
 {
@@ -15,6 +16,7 @@ public:
 	~Game();
 
 	bool InitGame(Application* app);
+	void CleanUpGame();
 	void RunGame();
 
 private:
@@ -23,5 +25,6 @@ private:
 
 private:
 	Application* m_app = nullptr;
+	Actor* m_actor = nullptr;
 };
 
