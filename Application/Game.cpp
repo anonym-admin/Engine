@@ -67,7 +67,6 @@ void Game::RunGame()
         swprintf_s(buf, L"fps: %d", m_fps);
         ::SetWindowText(m_app->GetHwnd(), buf);
     }
-
 }
 
 void Game::Update()

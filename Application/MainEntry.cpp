@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Application.h"
 
-#include <memory>
-
 extern "C" { __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001; }
 // D3D12 Agility SDK Runtime
 extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 614; }
