@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "GeometryGenerator.h"
 #include "Actor.h"
+#include "LinkedList.h"
 
 /*
 =======
@@ -28,18 +29,28 @@ bool Game::InitGame(Application* app)
     renderer->SetCameraPos(0.0f, 0.0f, -5.0f);
 
     // Set actors.
-    m_actor = new Actor;
-    m_actor->Initialize(renderer);
+    for (uint32 i = 0; i < 20; i++)
+    {
+        Actor* actor = new Actor;
+        actor->Initialize(renderer);
+        actor->SetPosition(Vector3(-10.0f + i * 5.0f, 0.0f, 0.0f));
+
+        DL_InsertBack(&m_headActorListNode, &m_tailActorListNode, &actor->actorLink);
+    }
 
     return true;
 }
 
 void Game::CleanUpGame()
 {
-    if (m_actor)
+    DL_LIST* curActorListNode = m_headActorListNode;
+    while (curActorListNode != nullptr)
     {
-        delete m_actor;
-        m_actor = nullptr;
+        DL_LIST* delNextNode = curActorListNode->next;
+        DL_Delete(&m_headActorListNode, &m_tailActorListNode, curActorListNode);
+        Actor* actor = reinterpret_cast<Actor*>(curActorListNode);
+        delete actor;
+        curActorListNode = delNextNode;
     }
 }
 
@@ -74,10 +85,22 @@ void Game::RunGame()
 
 void Game::Update(uint64 curTick)
 {
-    m_actor->Update();
+    DL_LIST* curActorListNode = m_headActorListNode;
+    while (curActorListNode != nullptr)
+    {
+        Actor* actor = reinterpret_cast<Actor*>(curActorListNode);
+        actor->Update();
+        curActorListNode = curActorListNode->next;
+    }
 }
 
 void Game::Render()
 {
-    m_actor->Render();
+    DL_LIST* curActorListNode = m_headActorListNode;
+    while (curActorListNode != nullptr)
+    {
+        Actor* actor = reinterpret_cast<Actor*>(curActorListNode);
+        actor->Render();
+        curActorListNode = curActorListNode->next;
+    }
 }

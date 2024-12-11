@@ -8,6 +8,7 @@ Game
 
 class Application;
 class Actor;
+struct DL_LIST;
 
 class Game
 {
@@ -25,8 +26,8 @@ private:
 
 private:
 	Application* m_app = nullptr;
-	Actor* m_actor = nullptr;
-
+	DL_LIST* m_headActorListNode = nullptr;
+	DL_LIST* m_tailActorListNode = nullptr;
 	uint32 m_fps = 0;
 };
 

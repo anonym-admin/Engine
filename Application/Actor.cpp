@@ -62,10 +62,11 @@ void Actor::CleanUp()
 
 void Actor::Update()
 {
-    static float dt = 0.0f;
-    dt += 1.0f / 1000.0f;
+    m_dt += 1.0f / 1000.0f;
 
-    m_transform = Matrix::CreateRotationY(dt);
+    Vector3 translation = m_transform.Translation();
+
+    m_transform = Matrix::CreateRotationY(m_dt) * Matrix::CreateTranslation(translation);
 }
 
 void Actor::Render()

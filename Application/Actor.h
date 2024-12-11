@@ -1,5 +1,7 @@
 #pragma once
 
+#include "LinkedList.h"
+
 /*
 =======
 Actor
@@ -24,6 +26,8 @@ public:
 
 	void SetPosition(Vector3 pos);
 
+	DL_LIST actorLink;
+
 private:
 	IT_Renderer* m_renderer = nullptr;	
 	MESH_GROUP_HANDLE* m_cube = nullptr;
@@ -31,5 +35,6 @@ private:
 	Matrix m_transform = Matrix();
 	Vector3 m_pos = Vector3(0.0f);
 	void* m_texture0 = nullptr;
+	float m_dt = 0.0f;
 };
 
