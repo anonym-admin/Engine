@@ -16,7 +16,7 @@ public:
 	Application();
 	~Application();
 
-	bool Initialize();
+	bool Initialize(bool enableDebugLayer, bool enableGBV);
 	void CleanUp();
 	int32 RunApplication();
 	LRESULT CALLBACK MemberWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -26,7 +26,7 @@ public:
 
 private:
 	bool InitWindow();
-	bool InitModule();
+	bool InitModule(bool enableDebugLayer, bool enableGBV);
 	void CleanUpWindow();
 	void CleanUpModule();
 

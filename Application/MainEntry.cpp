@@ -8,8 +8,6 @@ extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 614; }
 extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = u8".\\D3D12\\"; }
 #endif
 
-
-
 /*
 ==============
 Main entry
@@ -24,7 +22,7 @@ int main(int argc, char* argv[])
 #endif
 
 	Application* app = new Application;
-	if (!app->Initialize())
+	if (!app->Initialize(true, true)) // app->Initialize(false, false)
 	{
 		return -1;
 	}

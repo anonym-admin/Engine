@@ -29,13 +29,13 @@ Application::~Application()
 	CleanUp();
 }
 
-bool Application::Initialize()
+bool Application::Initialize(bool enableDebugLayer, bool enableGBV)
 {
 	if (!InitWindow())
 	{
 		return false;
 	}
-	if (!InitModule())
+	if (!InitModule(enableDebugLayer, enableGBV))
 	{
 		return false;
 	}
@@ -148,7 +148,7 @@ bool Application::InitWindow()
 	return true;
 }
 
-bool Application::InitModule()
+bool Application::InitModule(bool enableDebugLayer, bool enableGBV)
 {
 	m_rendererDll = ::LoadLibrary(L"./RendererD3D12.dll");
 	if (!m_rendererDll)
@@ -157,7 +157,7 @@ bool Application::InitModule()
 	}
 	Dll_CreateInstance CreateInstance = (Dll_CreateInstance)::GetProcAddress(m_rendererDll, "Dll_CreateInstance");
 	CreateInstance(reinterpret_cast<void**>(&m_renderer));
-	if (!m_renderer->Initialize(m_hwnd))
+	if (!m_renderer->Initialize(m_hwnd, enableDebugLayer, enableGBV))
 	{
 		return false;
 	}
