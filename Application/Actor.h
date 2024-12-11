@@ -30,5 +30,6 @@ private:
 	IT_MeshObject* m_meshObj = nullptr;
 	Matrix m_transform = Matrix();
 	Vector3 m_pos = Vector3(0.0f);
+	void* m_texture0 = nullptr;
 };
 
