@@ -23,9 +23,10 @@ bool Actor::Initialize(IT_Renderer* renderer)
 {
     m_renderer = renderer;
 
-    m_triangle = GeometryGenerator::MakeSquare();
+    m_cube = GeometryGenerator::MakeCube();
     m_meshObj = m_renderer->CreateMeshObject();
-    m_meshObj->CreateMeshBuffers(m_triangle);
+    m_meshObj->CreateMeshBuffers(m_cube);
+    m_meshObj->SetTransform(m_transform);
 
     return true;
 }
@@ -37,14 +38,25 @@ void Actor::CleanUp()
         m_meshObj->Release();
     }
 
-    GeometryGenerator::DestroyGeometry(m_triangle);
+    GeometryGenerator::DestroyGeometry(m_cube);
 }
 
 void Actor::Update()
 {
+    static float dt = 0.0f;
+    dt += 1.0f / 1000.0f;
+
+    m_transform = Matrix::CreateRotationY(dt);
 }
 
 void Actor::Render()
 {
-    m_renderer->RenderMeshObject(m_meshObj);
+    m_renderer->RenderMeshObject(m_meshObj, m_transform);
+}
+
+void Actor::SetPosition(Vector3 pos)
+{
+    m_pos = pos;
+    m_transform = Matrix::CreateTranslation(pos);
+    m_meshObj->SetTransform(m_transform);
 }

@@ -20,7 +20,7 @@ public:
 	void RunGame();
 
 private:
-	void Update();
+	void Update(uint64 curTick);
 	void Render();
 
 private:

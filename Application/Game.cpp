@@ -20,10 +20,14 @@ Game::~Game()
 
 bool Game::InitGame(Application* app)
 {
+    IT_Renderer* renderer = app->GetRenderer();
+
     m_app = app;
 
-    IT_Renderer* renderer = m_app->GetRenderer();
+    // Set camera position.
+    renderer->SetCameraPos(0.0f, 0.0f, -5.0f);
 
+    // Set actors.
     m_actor = new Actor;
     m_actor->Initialize(renderer);
 
@@ -45,11 +49,10 @@ void Game::RunGame()
 
     static uint32 fps = 0;
     static uint64 prevTickCount = 0;
-
     fps++;
-   
+
     uint64 curTickCount = ::GetTickCount64();
-    Update();
+    Update(curTickCount);
 
     renderer->BeginRender();
     Render();
@@ -69,7 +72,7 @@ void Game::RunGame()
     }
 }
 
-void Game::Update()
+void Game::Update(uint64 curTick)
 {
     m_actor->Update();
 }
