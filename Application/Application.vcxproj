@@ -151,6 +151,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="MainEntry.cpp" />
     <ClCompile Include="pch.cpp">
@@ -169,6 +170,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="HashTable.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
