@@ -102,14 +102,14 @@ void* HT_Find(HashTable* hashTable, void* key)
 		cur = cur->next;
 	}
 
+	// Not find.
+#if defined(_DEBUG)
 	if (!cur)
 	{
-		// Not find.
-#if defined(_DEBUG)
 		__debugbreak();
-#endif
 		return nullptr;
 	}
+#endif
 
 	return bucket->value;
 }
