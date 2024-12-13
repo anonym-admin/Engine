@@ -36,12 +36,6 @@
     <ClCompile Include="Actor.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="LinkedList.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="HashTable.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\Type.h">
@@ -70,12 +64,6 @@
     </ClInclude>
     <ClInclude Include="Actor.h">
       <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedList.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="HashTable.h">
-      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

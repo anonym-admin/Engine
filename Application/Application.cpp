@@ -31,6 +31,8 @@ Application::~Application()
 
 bool Application::Initialize(bool enableDebugLayer, bool enableGBV)
 {
+	srand(static_cast<uint32>(time(nullptr)));
+
 	if (!InitWindow())
 	{
 		return false;

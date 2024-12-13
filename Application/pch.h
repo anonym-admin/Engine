@@ -6,12 +6,15 @@
 	#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
+// run time lib.
 #include <stdio.h>
+#include <stdlib.h>
 #include <windows.h>
+#include <time.h>
 
 
 
-
-
+// my lib.
 #include "../../Common/MeshData.h"
-#include "LinkedList.h"
+#include "../../CommonLib/CommonLib/LinkedList.h"
+#include "../../CommonLib/CommonLib/HashTable.h"
