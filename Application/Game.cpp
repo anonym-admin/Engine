@@ -27,29 +27,29 @@ bool Game::InitGame(Application* app)
 	// Set camera position.
 	m_renderer->SetCameraPos(0.0f, 0.0f, -5.0f);
 
-	// Set the mesh object.
-	m_square = GeometryGenerator::MakeSquare();
-	m_tiledTexture = m_renderer->CreateTiledTexture(256, 256, 32, 32);
-	m_meshObj = m_renderer->CreateMeshObject();
-	m_meshObj->CreateMeshBuffers(m_square);
-	m_meshObj->SetTexture(m_tiledTexture);
-	m_meshObj->SetTransform(Matrix::Identity);
+	//// Set the mesh object.
+	//m_square = GeometryGenerator::MakeSquare();
+	//m_tiledTexture = m_renderer->CreateTiledTexture(256, 256, 32, 32);
+	//m_meshObj = m_renderer->CreateMeshObject();
+	//m_meshObj->CreateMeshBuffers(m_square);
+	//m_meshObj->SetTexture(m_tiledTexture);
+	//m_meshObj->SetTransform(Matrix::Identity);
 
-	//// Set the actors.
-	//const uint32 NUM_ACTORS = 2000;
-	//for (uint32 i = 0; i < NUM_ACTORS; i++)
-	//{
-	//    Actor* actor = new Actor;
-	//    actor->Initialize(m_renderer);
-	//    
-	//    float x = static_cast<float>((rand() % 21) - 10);
-	//    float y = static_cast<float>((rand() % 21) - 10);
-	//    float z = static_cast<float>((rand() % 21) - 10);
+	// Set the actors.
+	const uint32 NUM_ACTORS = 2000;
+	for (uint32 i = 0; i < NUM_ACTORS; i++)
+	{
+	    Actor* actor = new Actor;
+	    actor->Initialize(m_renderer);
+	    
+	    float x = static_cast<float>((rand() % 21) - 10);
+	    float y = static_cast<float>((rand() % 21) - 10);
+	    float z = static_cast<float>((rand() % 21) - 10);
 
-	//    actor->SetPosition(Vector3(x, y, z));
+	    actor->SetPosition(Vector3(x, y, z));
 
-	//    DL_InsertBack(&m_headActorListNode, &m_tailActorListNode, &actor->actorLink);
-	//}
+	    DL_InsertBack(&m_headActorListNode, &m_tailActorListNode, &actor->actorLink);
+	}
 
 	// Set the font object.
 	m_fontTexWidth = 256;
@@ -270,7 +270,7 @@ void Game::Update(uint64 curTick)
 void Game::Render()
 {
 	// Render the mesh object.
-	m_renderer->RenderMeshObject(m_meshObj, Matrix::Identity);
+	// m_renderer->RenderMeshObject(m_meshObj, Matrix::Identity);
 
 	// Render actors.
 	DL_LIST* cur = m_headActorListNode;
