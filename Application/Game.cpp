@@ -29,7 +29,7 @@ bool Game::InitGame(Application* app)
 
 	// Set the mesh object.
 	m_square = GeometryGenerator::MakeSquare();
-	m_tiledTexture = m_renderer->CreateTiledTexture(256, 256);
+	m_tiledTexture = m_renderer->CreateTiledTexture(256, 256, 32, 32);
 	m_meshObj = m_renderer->CreateMeshObject();
 	m_meshObj->CreateMeshBuffers(m_square);
 	m_meshObj->SetTexture(m_tiledTexture);
