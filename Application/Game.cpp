@@ -36,7 +36,7 @@ bool Game::InitGame(Application* app)
 	//m_meshObj->SetTransform(Matrix::Identity);
 
 	// Set the actors.
-	const uint32 NUM_ACTORS = 2000;
+	const uint32 NUM_ACTORS = 200;
 	for (uint32 i = 0; i < NUM_ACTORS; i++)
 	{
 	    Actor* actor = new Actor;
@@ -55,7 +55,7 @@ bool Game::InitGame(Application* app)
 	m_fontTexWidth = 256;
 	m_fontTexHeight = 256;
 	m_fontObj = m_renderer->CreateFontObject(L"Consolas", 18);
-	m_fontTexture = m_renderer->CreateDynamicTexture(m_fontTexWidth, m_fontTexHeight);
+	m_fontTexture = m_renderer->CreateDynamicTexture(m_fontTexWidth, m_fontTexHeight, "font");
 	m_fontImage = (uint8*)malloc(m_fontTexWidth * m_fontTexHeight * 4);
 
 	// Create the sprite.
@@ -70,18 +70,24 @@ bool Game::InitGame(Application* app)
 			dest[x + m_imageWidth * y] = 0xff0000ff; // red
 		}
 	}
-	m_dynamicTexture = m_renderer->CreateDynamicTexture(m_imageWidth, m_imageHeight);
-	m_spriteObj = m_renderer->CreateSpriteObject();
+	m_dynamicTexture = m_renderer->CreateDynamicTexture(m_imageWidth, m_imageHeight, "gradation");
+	m_spriteObj0 = m_renderer->CreateSpriteObject();
+	m_spriteObj1 = m_renderer->CreateSpriteObject();
 
 	return true;
 }
 
 void Game::CleanUpGame()
 {
-	if (m_spriteObj)
+	if (m_spriteObj1)
 	{
-		m_spriteObj->Release();
-		m_spriteObj = nullptr;
+		m_spriteObj1->Release();
+		m_spriteObj1 = nullptr;
+	}
+	if (m_spriteObj0)
+	{
+		m_spriteObj0->Release();
+		m_spriteObj0 = nullptr;
 	}
 	if (m_dynamicTexture)
 	{
@@ -282,7 +288,11 @@ void Game::Render()
 	}
 
 	// Render text.
-	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj, 300, 300, 1.0f, 1.0f, 0.0f, nullptr, m_fontTexture);
+	// ====================
+	// WWARNING!!!
+	// ====================
+	// 같은 sprite obj 에 대해서 멀티쓰레드 렌더링을 시도할 경우 플리커링 현상이 발생한다.
+	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj0, 300, 300, 1.0f, 1.0f, 0.0f, nullptr, m_fontTexture, "text");
 	// Render dynamic gradation texture.
-	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj, 100, 100, 0.5f, 0.5f, 0.0f, nullptr, m_dynamicTexture);
+	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj1, 100, 100, 0.5f, 0.5f, 0.0f, nullptr, m_dynamicTexture, "gradation");
 }

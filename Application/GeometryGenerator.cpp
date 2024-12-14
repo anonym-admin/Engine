@@ -45,7 +45,7 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeTriagle()
 	return meshGroup;
 }
 
-MESH_GROUP_HANDLE* GeometryGenerator::MakeSquare()
+MESH_GROUP_HANDLE* GeometryGenerator::MakeSquare(const float scale)
 {
 	MESH_GROUP_HANDLE* meshGroup = new MESH_GROUP_HANDLE;
 	uint32 numMeshes = 1;
@@ -59,10 +59,10 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeSquare()
 	srcData->vertices = new Vertex[srcData->numVertices];
 	srcData->indices = new uint32[srcData->numIndices];
 
-	srcData->vertices[0].position = Vector3(-1.0f, 1.0f, 0.0f);
-	srcData->vertices[1].position = Vector3(1.0f, 1.0f, 0.0f);
-	srcData->vertices[2].position = Vector3(1.0f, -1.0f, 0.0f);
-	srcData->vertices[3].position = Vector3(-1.0f, -1.0f, 0.0f);
+	srcData->vertices[0].position = Vector3(-1.0f, 1.0f, 0.0f) * scale;
+	srcData->vertices[1].position = Vector3(1.0f, 1.0f, 0.0f) * scale;
+	srcData->vertices[2].position = Vector3(1.0f, -1.0f, 0.0f) * scale;
+	srcData->vertices[3].position = Vector3(-1.0f, -1.0f, 0.0f) * scale;
 	srcData->vertices[0].normal = Vector3(0.0f, 0.0f, -1.0f);
 	srcData->vertices[1].normal = Vector3(0.0f, 0.0f, -1.0f);
 	srcData->vertices[2].normal = Vector3(0.0f, 0.0f, -1.0f);
@@ -88,7 +88,7 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeSquare()
 	return meshGroup;
 }
 
-MESH_GROUP_HANDLE* GeometryGenerator::MakeCube()
+MESH_GROUP_HANDLE* GeometryGenerator::MakeCube(const float scale)
 {
 	MESH_GROUP_HANDLE* meshGroup = new MESH_GROUP_HANDLE;
 	uint32 numMeshes = 6;
@@ -106,10 +106,10 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeCube()
 	}
 
 	// À­¸é
-	srcData[0].vertices[0].position = Vector3(-1.0f, 1.0f, -1.0f);
-	srcData[0].vertices[1].position = Vector3(-1.0f, 1.0f, 1.0f);
-	srcData[0].vertices[2].position = Vector3(1.0f, 1.0f, 1.0f);
-	srcData[0].vertices[3].position = Vector3(1.0f, 1.0f, -1.0f);
+	srcData[0].vertices[0].position = Vector3(-1.0f, 1.0f, -1.0f) * scale;
+	srcData[0].vertices[1].position = Vector3(-1.0f, 1.0f, 1.0f) * scale;
+	srcData[0].vertices[2].position = Vector3(1.0f, 1.0f, 1.0f) * scale;
+	srcData[0].vertices[3].position = Vector3(1.0f, 1.0f, -1.0f) * scale;
 	srcData[0].vertices[0].normal = Vector3(0.0f, 1.0f, 0.0f);
 	srcData[0].vertices[1].normal = Vector3(0.0f, 1.0f, 0.0f);
 	srcData[0].vertices[2].normal = Vector3(0.0f, 1.0f, 0.0f);
@@ -119,10 +119,10 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeCube()
 	srcData[0].vertices[2].texCoord = Vector2(1.0f, 1.0f);
 	srcData[0].vertices[3].texCoord = Vector2(0.0f, 1.0f);
 	// ¾Æ·§¸é
-	srcData[1].vertices[0].position = Vector3(-1.0f, -1.0f, -1.0f);
-	srcData[1].vertices[1].position = Vector3(1.0f, -1.0f, -1.0f);
-	srcData[1].vertices[2].position = Vector3(1.0f, -1.0f, 1.0f);
-	srcData[1].vertices[3].position = Vector3(-1.0f, -1.0f, 1.0f);
+	srcData[1].vertices[0].position = Vector3(-1.0f, -1.0f, -1.0f) * scale;
+	srcData[1].vertices[1].position = Vector3(1.0f, -1.0f, -1.0f) * scale;
+	srcData[1].vertices[2].position = Vector3(1.0f, -1.0f, 1.0f) * scale;
+	srcData[1].vertices[3].position = Vector3(-1.0f, -1.0f, 1.0f) * scale;
 	srcData[1].vertices[0].normal = Vector3(0.0f, -1.0f, 0.0f);
 	srcData[1].vertices[1].normal = Vector3(0.0f, -1.0f, 0.0f);
 	srcData[1].vertices[2].normal = Vector3(0.0f, -1.0f, 0.0f);
@@ -132,10 +132,10 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeCube()
 	srcData[1].vertices[2].texCoord = Vector2(1.0f, 1.0f);
 	srcData[1].vertices[3].texCoord = Vector2(0.0f, 1.0f);
 	// ¾Õ¸é
-	srcData[2].vertices[0].position = Vector3(-1.0f, -1.0f, -1.0f);
-	srcData[2].vertices[1].position = Vector3(-1.0f, 1.0f, -1.0f);
-	srcData[2].vertices[2].position = Vector3(1.0f, 1.0f, -1.0f);
-	srcData[2].vertices[3].position = Vector3(1.0f, -1.0f, -1.0f);
+	srcData[2].vertices[0].position = Vector3(-1.0f, -1.0f, -1.0f) * scale;
+	srcData[2].vertices[1].position = Vector3(-1.0f, 1.0f, -1.0f) * scale;
+	srcData[2].vertices[2].position = Vector3(1.0f, 1.0f, -1.0f) * scale;
+	srcData[2].vertices[3].position = Vector3(1.0f, -1.0f, -1.0f) * scale;
 	srcData[2].vertices[0].normal = Vector3(0.0f, 0.0f, -1.0f);
 	srcData[2].vertices[1].normal = Vector3(0.0f, 0.0f, -1.0f);
 	srcData[2].vertices[2].normal = Vector3(0.0f, 0.0f, -1.0f);
@@ -145,10 +145,10 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeCube()
 	srcData[2].vertices[2].texCoord = Vector2(1.0f, 1.0f);
 	srcData[2].vertices[3].texCoord = Vector2(0.0f, 1.0f);
 	// µÞ¸é
-	srcData[3].vertices[0].position = Vector3(-1.0f, -1.0f, 1.0f);
-	srcData[3].vertices[1].position = Vector3(1.0f, -1.0f, 1.0f);
-	srcData[3].vertices[2].position = Vector3(1.0f, 1.0f, 1.0f);
-	srcData[3].vertices[3].position = Vector3(-1.0f, 1.0f, 1.0f);
+	srcData[3].vertices[0].position = Vector3(-1.0f, -1.0f, 1.0f) * scale;
+	srcData[3].vertices[1].position = Vector3(1.0f, -1.0f, 1.0f) * scale;
+	srcData[3].vertices[2].position = Vector3(1.0f, 1.0f, 1.0f) * scale;
+	srcData[3].vertices[3].position = Vector3(-1.0f, 1.0f, 1.0f) * scale;
 	srcData[3].vertices[0].normal = Vector3(0.0f, 0.0f, 1.0f);
 	srcData[3].vertices[1].normal = Vector3(0.0f, 0.0f, 1.0f);
 	srcData[3].vertices[2].normal = Vector3(0.0f, 0.0f, 1.0f);
@@ -158,10 +158,10 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeCube()
 	srcData[3].vertices[2].texCoord = Vector2(1.0f, 1.0f);
 	srcData[3].vertices[3].texCoord = Vector2(0.0f, 1.0f);
 	// ¿ÞÂÊ
-	srcData[4].vertices[0].position = Vector3(-1.0f, -1.0f, 1.0f);
-	srcData[4].vertices[1].position = Vector3(-1.0f, 1.0f, 1.0f);
-	srcData[4].vertices[2].position = Vector3(-1.0f, 1.0f, -1.0f);
-	srcData[4].vertices[3].position = Vector3(-1.0f, -1.0f, -1.0f);
+	srcData[4].vertices[0].position = Vector3(-1.0f, -1.0f, 1.0f) * scale;
+	srcData[4].vertices[1].position = Vector3(-1.0f, 1.0f, 1.0f) * scale;
+	srcData[4].vertices[2].position = Vector3(-1.0f, 1.0f, -1.0f) * scale;
+	srcData[4].vertices[3].position = Vector3(-1.0f, -1.0f, -1.0f) * scale;
 	srcData[4].vertices[0].normal = Vector3(-1.0f, 0.0f, 0.0f);
 	srcData[4].vertices[1].normal = Vector3(-1.0f, 0.0f, 0.0f);
 	srcData[4].vertices[2].normal = Vector3(-1.0f, 0.0f, 0.0f);
@@ -171,10 +171,10 @@ MESH_GROUP_HANDLE* GeometryGenerator::MakeCube()
 	srcData[4].vertices[2].texCoord = Vector2(1.0f, 1.0f);
 	srcData[4].vertices[3].texCoord = Vector2(0.0f, 1.0f);
 	// ¿À¸¥ÂÊ
-	srcData[5].vertices[0].position = Vector3(1.0f, -1.0f, 1.0f);
-	srcData[5].vertices[1].position = Vector3(1.0f, -1.0f, -1.0f);
-	srcData[5].vertices[2].position = Vector3(1.0f, 1.0f, -1.0f);
-	srcData[5].vertices[3].position = Vector3(1.0f, 1.0f, 1.0f);
+	srcData[5].vertices[0].position = Vector3(1.0f, -1.0f, 1.0f) * scale;
+	srcData[5].vertices[1].position = Vector3(1.0f, -1.0f, -1.0f) * scale;
+	srcData[5].vertices[2].position = Vector3(1.0f, 1.0f, -1.0f) * scale;
+	srcData[5].vertices[3].position = Vector3(1.0f, 1.0f, 1.0f) * scale;
 	srcData[5].vertices[0].normal = Vector3(1.0f, 0.0f, 0.0f);
 	srcData[5].vertices[1].normal = Vector3(1.0f, 0.0f, 0.0f);
 	srcData[5].vertices[2].normal = Vector3(1.0f, 0.0f, 0.0f);

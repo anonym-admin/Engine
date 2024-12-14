@@ -40,7 +40,8 @@ private:
 	DL_LIST* m_tailActorListNode = nullptr;
 	
 	// Sprite
-	IT_SpriteObject* m_spriteObj = nullptr;
+	IT_SpriteObject* m_spriteObj0 = nullptr;
+	IT_SpriteObject* m_spriteObj1 = nullptr;
 	uint32 m_imageWidth = 0;
 	uint32 m_imageHeight = 0;
 	uint8* m_image = nullptr;

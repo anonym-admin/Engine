@@ -23,7 +23,7 @@ bool Actor::Initialize(IT_Renderer* renderer)
 {
     m_renderer = renderer;
 
-    m_cube = GeometryGenerator::MakeCube();
+    m_cube = GeometryGenerator::MakeCube(0.2f);
 
     const wchar_t* basePath = L"../../Assets/";
     const wchar_t* textureFilenames[] = {
