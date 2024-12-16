@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../../Interface/IT_Renderer.h"
-
 /*
 =============
 Application
@@ -50,5 +48,6 @@ private:
 	float m_ndcMousePosY = 0.0f;
 	bool m_mouseLeftButton = false;
 	bool m_mouseRightButton = false;
+	bool m_fpv = false; // First person view.
 };
 

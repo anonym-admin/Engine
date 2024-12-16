@@ -7,15 +7,17 @@ Game
 */
 
 class Application;
+class Camera;
+class TextUI;
+class CharacterObject_01;
+class CoordinateObject;
 class Actor;
-interface IT_Renderer;
-interface IT_MeshObject;
-interface IT_SpriteObject;
-interface IT_LineObject;
 
 class Game
 {
 public:
+	static const uint32 MAX_ACTOR_NUM = 128;
+
 	Game();
 	~Game();
 
@@ -24,10 +26,16 @@ public:
 	void RunGame();
 
 private:
+	bool InitCamera();
+	bool InitActorLists();
+	bool InitCharacters();
 	void Update(uint64 curTick);
 	void UpdateMousePicking();
-	Actor* IntersectActor(float ndcX, float ndcY, Vector3* prevPos, float* prevRatio);
 	void Render();
+	void CleanCamera();
+	void CleanActorLists();
+	void CleanCharacters();
+	Actor* IntersectActor(float ndcX, float ndcY, Vector3* prevPos, float* prevRatio);
 
 private:
 	Application* m_app = nullptr;
@@ -35,32 +43,17 @@ private:
 	uint32 m_screenWidth = 0;
 	uint32 m_screenHeight = 0;
 	uint32 m_fps = 0;
-	// Mesh object.
-	IT_MeshObject* m_meshObj = nullptr;
-	void* m_tiledTexture = nullptr;
-	MESH_GROUP_HANDLE* m_square = nullptr;
+	// Text UI
+	TextUI* m_textUI = nullptr;
+	// Camera
+	Camera* m_camera = nullptr;
+	// Actor Container.
+	HashTable* m_htActors = nullptr;
+	MESH_GROUP_HANDLE* m_cube = nullptr;
+	// Character.
+	CharacterObject_01* m_character_01 = nullptr;
+	// CoordinateObject
+	CoordinateObject* m_coordObj = nullptr;
 
-	// Actor
-	DL_LIST* m_headActorListNode = nullptr;
-	DL_LIST* m_tailActorListNode = nullptr;
-	
-	// Sprite
-	IT_SpriteObject* m_spriteObj0 = nullptr;
-	IT_SpriteObject* m_spriteObj1 = nullptr;
-	uint32 m_imageWidth = 0;
-	uint32 m_imageHeight = 0;
-	uint8* m_image = nullptr;
-	void* m_dynamicTexture = nullptr;
-	// Font
-	uint32 m_fontTexWidth = 256;
-	uint32 m_fontTexHeight = 256;
-	void* m_fontObj = nullptr;
-	void* m_fontTexture = nullptr;
-	uint8* m_fontImage = nullptr;
-
-	wchar_t m_gameText[256] = {};
-	// Line
-	IT_LineObject* m_lineObj = nullptr;
-	LineData* m_lineData = nullptr;
 };
 

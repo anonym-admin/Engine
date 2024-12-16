@@ -19,5 +19,7 @@
 #include "../../CommonLib/CommonLib/LinkedList.h"
 #include "../../CommonLib/CommonLib/HashTable.h"
 #include "../../CommonLib/CommonLib/GenericUtils.h"
+#include "../../Interface/IT_Renderer.h"
+#include "EngineType.h"
 
 

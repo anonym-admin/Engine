@@ -16,78 +16,139 @@ Actor::Actor()
 
 Actor::~Actor()
 {
-    CleanUp();
+	CleanUp();
 }
 
-bool Actor::Initialize(IT_Renderer* renderer)
+bool Actor::Initialize(IT_Renderer* renderer, ACTOR_HANDLE* actorHandle)
 {
-    m_renderer = renderer;
+	m_renderer = renderer;
 
-    const float cubeScale = 0.2f;
-    m_cube = GeometryGenerator::MakeCube(cubeScale);
+	memcpy(&m_actorHandle, actorHandle, sizeof(ACTOR_HANDLE));
 
-    const wchar_t* basePath = L"../../Assets/";
-    const wchar_t* textureFilenames[] = {
-        L"tex_00.dds",
-        L"tex_01.dds",
-        L"tex_02.dds",
-        L"tex_03.dds",
-        L"tex_04.dds",
-        L"tex_05.dds",
-    };
+	switch (m_actorHandle.type)
+	{
+	case ACTOR_TYPE::MESH_OBJ:
+	{
+		IT_MeshObject* meshObj = nullptr;
 
-    for (uint32 i = 0; i < m_cube->numMeshes; i++)
-    {
-        wchar_t filePath[256] = {};
-        wcscat_s(filePath, basePath);
-        wcscat_s(filePath, textureFilenames[i]);
+		m_geometry = m_actorHandle.mesh.geometry;
+		meshObj = m_renderer->CreateMeshObject();
+		meshObj->CreateMeshBuffers(m_geometry);
+		meshObj->SetTransform(m_transform);
+		m_boundingBox = DirectX::BoundingBox(m_position, m_actorHandle.mesh.scale);
 
-        wcscpy_s(m_cube->meshes[i].textureFileaname, 256, filePath);
-    }
+		m_renderObj = meshObj;
 
-    m_meshObj = m_renderer->CreateMeshObject();
-    m_meshObj->CreateMeshBuffers(m_cube);
-    m_meshObj->SetTransform(m_transform);
-    m_boundingBox = DirectX::BoundingBox(m_pos, Vector3(cubeScale * 2, cubeScale * 2, cubeScale * 2));
+		SetPosition(m_actorHandle.mesh.pos);
+	}
+	break;
+	case ACTOR_TYPE::SPRITE_OBJ:
+	{
+		IT_SpriteObject* spriteObj = nullptr;
 
-    return true;
+		spriteObj = m_renderer->CreateSpriteObject();
+
+		m_renderObj = spriteObj;
+	}
+	break;
+	case ACTOR_TYPE::LINE_OBJ:
+	{
+		IT_LineObject* lineObj = nullptr;
+
+		lineObj = m_renderer->CreateLineObject();
+		lineObj->CreateLineBuffers(m_actorHandle.line.lineData);
+
+		m_renderObj = lineObj;
+	}
+	break;
+	default:
+	{
+		__debugbreak();
+	}
+	break;
+	}
+
+	return true;
 }
 
 void Actor::CleanUp()
 {
-    if (m_meshObj)
-    {
-        m_meshObj->Release();
-    }
-    GeometryGenerator::DestroyGeometry(m_cube);
+	if (m_renderObj)
+	{
+		IUnknown* obj = reinterpret_cast<IUnknown*>(m_renderObj);
+		obj->Release();
+
+		m_renderObj = nullptr;
+	}
 }
 
 void Actor::Update()
 {
-    m_dt += 1.0f / 1000.0f;
-
-    Vector3 translation = m_transform.Translation();
-
-    m_transform = Matrix::CreateRotationY(m_dt) * Matrix::CreateTranslation(translation);
 }
 
 void Actor::Render()
 {
-    m_renderer->RenderMeshObject(m_meshObj, m_transform);
+	switch (m_actorHandle.type)
+	{
+	case ACTOR_TYPE::MESH_OBJ:
+	{
+		IT_MeshObject* meshObj = reinterpret_cast<IT_MeshObject*>(m_renderObj);
+		m_renderer->RenderMeshObject(meshObj, m_transform);
+	}
+	break;
+	case ACTOR_TYPE::SPRITE_OBJ:
+	{
+		IT_SpriteObject* spriteObj = reinterpret_cast<IT_SpriteObject*>(m_renderObj);
+		if (m_texture)
+		{
+			m_renderer->RenderSpriteObjectWithTexture(spriteObj, m_actorHandle.sprite.renderPosX, m_actorHandle.sprite.renderPosY, m_actorHandle.sprite.scaleX, m_actorHandle.sprite.scaleY, m_actorHandle.sprite.depthZ, m_actorHandle.sprite.sample, m_texture, "Text");
+		}
+	}
+	break;
+	case ACTOR_TYPE::LINE_OBJ:
+	{
+		IT_LineObject* lineObj = reinterpret_cast<IT_LineObject*>(m_renderObj);
+		m_renderer->RenderLineObject(lineObj, m_transform);
+	}
+	break;
+	default:
+	{
+		__debugbreak();
+	}
+	break;
+	}
+}
+
+void Actor::SetTexture(void* texHandle)
+{
+	if (ACTOR_TYPE::SPRITE_OBJ != m_actorHandle.type)
+	{
+		__debugbreak();
+	}
+
+	m_texture = texHandle;
 }
 
 void Actor::SetPosition(Vector3 pos)
 {
-    m_pos = pos;
-    m_transform = Matrix::CreateTranslation(pos);
-    m_meshObj->SetTransform(m_transform);
+	if (ACTOR_TYPE::MESH_OBJ != m_actorHandle.type && ACTOR_TYPE::LINE_OBJ != m_actorHandle.type)
+	{
+		__debugbreak();
+	}
 
-    m_boundingBox.Center = pos;
+	IT_MeshObject* obj = reinterpret_cast<IT_MeshObject*>(m_renderObj);
+
+	m_position = pos;
+	obj->SetTransform(Matrix::CreateTranslation(m_position));
 }
 
 void Actor::MovePosition(Vector3 deltaPos)
 {
-    Vector3 translation = m_transform.Translation();
-    
-    SetPosition(translation + deltaPos);
+	if (ACTOR_TYPE::MESH_OBJ != m_actorHandle.type && ACTOR_TYPE::LINE_OBJ != m_actorHandle.type)
+	{
+		__debugbreak();
+	}
+
+	Vector3 translation = m_transform.Translation();
+	SetPosition(translation + deltaPos);
 }

@@ -16,6 +16,12 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{5b1714da-5d9e-4cea-94ab-6d9c4ae036f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Object">
+      <UniqueIdentifier>{34046ab8-1b4f-4dd2-bb1f-d388a4e5598f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\UI">
+      <UniqueIdentifier>{20080dcc-7a42-4cbb-a7db-6f726da79901}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainEntry.cpp">
@@ -38,6 +44,18 @@
     </ClCompile>
     <ClCompile Include="EasyMath.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterObject_01.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinateObject.cpp">
+      <Filter>Main\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="TextUI.cpp">
+      <Filter>Main\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +88,19 @@
     </ClInclude>
     <ClInclude Include="EasyMath.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineType.h" />
+    <ClInclude Include="CoordinateObject.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterObject_01.h">
+      <Filter>Main\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="TextUI.h">
+      <Filter>Main\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

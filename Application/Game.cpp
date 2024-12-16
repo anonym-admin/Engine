@@ -3,6 +3,10 @@
 #include "Application.h"
 #include "GeometryGenerator.h"
 #include "Actor.h"
+#include "Camera.h"
+#include "TextUI.h"
+#include "CharacterObject_01.h"
+#include "CoordinateObject.h"
 
 /*
 =======
@@ -20,164 +24,45 @@ Game::~Game()
 
 bool Game::InitGame(Application* app)
 {
-	m_renderer = app->GetRenderer();
-
 	m_app = app;
+	m_renderer = app->GetRenderer();
 
 	RECT rect = {};
 	GetClientRect(m_app->GetHwnd(), &rect);
 	m_screenWidth = rect.right - rect.left;
 	m_screenHeight = rect.bottom - rect.top;
 
-	// Set camera position.
-	m_renderer->SetCameraPos(0.0f, 0.0f, -5.0f);
-
-	//// Set the mesh object.
-	//m_square = GeometryGenerator::MakeSquare();
-	//m_tiledTexture = m_renderer->CreateTiledTexture(256, 256, 32, 32);
-	//m_meshObj = m_renderer->CreateMeshObject();
-	//m_meshObj->CreateMeshBuffers(m_square);
-	//m_meshObj->SetTexture(m_tiledTexture);
-	//m_meshObj->SetTransform(Matrix::Identity);
-
-	// Set the actors.
-	const uint32 NUM_ACTORS = 20;
-	for (uint32 i = 0; i < NUM_ACTORS; i++)
-	{
-	    Actor* actor = new Actor;
-	    actor->Initialize(m_renderer);
-	    
-	    float x = static_cast<float>((rand() % 21) - 10);
-	    float y = static_cast<float>((rand() % 21) - 10);
-	    float z = static_cast<float>((rand() % 21) - 10);
-
-	    actor->SetPosition(Vector3(x, y, z));
-
-	    DL_InsertBack(&m_headActorListNode, &m_tailActorListNode, &actor->actorLink);
-	}
-
-	// Set the font object.
-	m_fontTexWidth = 256;
-	m_fontTexHeight = 64;
-	m_fontObj = m_renderer->CreateFontObject(L"Consolas", 12);
-	m_fontTexture = m_renderer->CreateDynamicTexture(m_fontTexWidth, m_fontTexHeight, "font");
-	m_fontImage = (uint8*)malloc(m_fontTexWidth * m_fontTexHeight * 4);
-
-	// Create the sprite.
-	m_imageWidth = 512;
-	m_imageHeight = 256;
-	m_image = (uint8*)malloc(m_imageWidth * m_imageHeight * 4);
-	uint32* dest = reinterpret_cast<uint32*>(m_image);
-	for (uint32 y = 0; y < m_imageHeight; y++)
-	{
-		for (uint32 x = 0; x < m_imageWidth; x++)
-		{
-			dest[x + m_imageWidth * y] = 0xff0000ff; // red
-		}
-	}
-	m_dynamicTexture = m_renderer->CreateDynamicTexture(m_imageWidth, m_imageHeight, "gradation");
-	m_spriteObj0 = m_renderer->CreateSpriteObject();
-	m_spriteObj1 = m_renderer->CreateSpriteObject();
-
-	// Create the line object.
-	m_lineObj = m_renderer->CreateLineObject();
-	m_lineData = new LineData;
-	m_lineData->numVertices = 6;
-	m_lineData->vertices = new LineVertex[6];
-	
-	m_lineData->vertices[0].position = Vector3(0.0f, 0.0f, 0.0f);
-	m_lineData->vertices[1].position = Vector3(0.0f, 1.0f, 0.0f);
-	m_lineData->vertices[2].position = Vector3(0.0f, 0.0f, 0.0f);
-	m_lineData->vertices[3].position = Vector3(1.0f, 0.0f, 0.0f);
-	m_lineData->vertices[4].position = Vector3(0.0f, 0.0f, 0.0f);
-	m_lineData->vertices[5].position = Vector3(0.0f, 0.0f, 1.0f);
-	m_lineData->vertices[0].color = Vector3(1.0f, 0.0f, 1.0f);
-	m_lineData->vertices[1].color = Vector3(1.0f, 0.0f, 1.0f);
-	m_lineData->vertices[2].color = Vector3(0.0f, 1.0f, 0.0f);
-	m_lineData->vertices[3].color = Vector3(0.0f, 1.0f, 0.0f);
-	m_lineData->vertices[4].color = Vector3(1.0f, 0.0f, 0.0f);
-	m_lineData->vertices[5].color = Vector3(1.0f, 0.0f, 0.0f);
-
-	m_lineObj->CreateLineBuffers(m_lineData);
+	// Initialize the camera.
+	InitCamera();
+	// Initialize the actor lists.
+	InitActorLists();
+	// Initialize the character.
+	InitCharacters();
+	// Initialize the text ui.
+	m_textUI = new TextUI;
+	m_textUI->Initialize(m_renderer, 256, 64, m_screenWidth - 256, 0, 1.0f, 1.0f, 0.0f, L"Consolas", 14);
+	// Create the coordinate object.
+	m_coordObj = new CoordinateObject;
+	m_coordObj->Initialize(m_renderer);
 
 	return true;
 }
 
 void Game::CleanUpGame()
 {
-	if (m_lineData)
+	if (m_coordObj)
 	{
-		if (m_lineData->vertices)
-		{
-			delete[] m_lineData->vertices;
-			m_lineData->vertices = nullptr;
-		}
-		delete m_lineData;
+		delete m_coordObj;
+		m_coordObj = nullptr;
 	}
-	if (m_lineObj)
+	if (m_textUI)
 	{
-		m_lineObj->Release();
-		m_lineObj = nullptr;
+		delete m_textUI;
+		m_textUI = nullptr;
 	}
-	if (m_spriteObj1)
-	{
-		m_spriteObj1->Release();
-		m_spriteObj1 = nullptr;
-	}
-	if (m_spriteObj0)
-	{
-		m_spriteObj0->Release();
-		m_spriteObj0 = nullptr;
-	}
-	if (m_dynamicTexture)
-	{
-		m_renderer->DestroyTexture(m_dynamicTexture);
-		m_dynamicTexture = nullptr;
-	}
-	if (m_image)
-	{
-		free(m_image);
-		m_image = nullptr;
-	}
-	if (m_fontImage)
-	{
-		free(m_fontImage);
-		m_fontImage = nullptr;
-	}
-	if (m_fontTexture)
-	{
-		m_renderer->DestroyTexture(m_fontTexture);
-		m_fontTexture = nullptr;
-	}
-	if (m_fontObj)
-	{
-		m_renderer->DestroyFontObject(m_fontObj);
-		m_fontObj = nullptr;
-	}
-	if (m_meshObj)
-	{
-		m_meshObj->Release();
-		m_meshObj = nullptr;
-	}
-	if (m_tiledTexture)
-	{
-		m_renderer->DestroyTexture(m_tiledTexture);
-		m_tiledTexture = nullptr;
-	}
-	if (m_square)
-	{
-		GeometryGenerator::DestroyGeometry(m_square);
-		m_square = nullptr;
-	}
-	DL_LIST* cur = m_headActorListNode;
-	while (cur != nullptr)
-	{
-		DL_LIST* next = cur->next;
-		Actor* actor = reinterpret_cast<Actor*>(cur);
-		DL_Delete(&m_headActorListNode, &m_tailActorListNode, cur);
-		delete actor;
-		cur = next;
-	}
+	CleanCharacters();
+	CleanActorLists();
+	CleanCamera();
 }
 
 void Game::RunGame()
@@ -209,6 +94,69 @@ void Game::RunGame()
 	}
 }
 
+bool Game::InitCamera()
+{
+	// Set camera position.
+	Vector3 camPos = Vector3(0.0f, 0.0f, -2.0f);
+	Vector3 camDir = Vector3(0.0f, 0.0f, 1.0f);
+	m_camera = new Camera;
+	m_camera->Initialize(m_app, camPos, camDir);
+
+	return true;
+}
+
+bool Game::InitActorLists()
+{
+	// Initialize actor container.
+	m_htActors = HT_CreateHashTable(MAX_ACTOR_NUM);
+
+	const float cubeScale = 0.2f;
+	m_cube = GeometryGenerator::MakeCube(cubeScale);
+
+	const wchar_t* basePath = L"../../Assets/";
+	const wchar_t* textureFilenames[] = 
+	{
+		L"tex_00.dds",
+		L"tex_01.dds",
+		L"tex_02.dds",
+		L"tex_03.dds",
+		L"tex_04.dds",
+		L"tex_05.dds",
+	};
+
+	for (uint32 i = 0; i < m_cube->numMeshes; i++)
+	{
+		wchar_t filePath[256] = {};
+		wcscat_s(filePath, basePath);
+		wcscat_s(filePath, textureFilenames[i]);
+
+		wcscpy_s(m_cube->meshes[i].textureFileaname, 256, filePath);
+	}
+
+	Actor* actor = new Actor;
+	ACTOR_HANDLE actorHandle = {};
+	actorHandle.type = ACTOR_TYPE::MESH_OBJ;
+	actorHandle.mesh.pos = Vector3(0.0f, 0.0f, 1.0f);
+	actorHandle.mesh.scale = Vector3(1.0f);
+	actorHandle.mesh.geometry = m_cube;
+	actor->Initialize(m_renderer, &actorHandle);
+	
+	HT_Insert(m_htActors, (void*)L"Box", actor);
+
+	return true;
+}
+
+bool Game::InitCharacters()
+{
+	Actor* actor = reinterpret_cast<Actor*>(HT_Find(m_htActors, (void*)L"Box"));
+	
+	m_character_01 = new CharacterObject_01;
+	m_character_01->Initialize();
+	m_character_01->SetActor(actor);
+
+	return true;
+}
+
 void Game::Update(uint64 curTick)
 {
 	static uint64 prevTickCount = curTick;
@@ -221,99 +169,17 @@ void Game::Update(uint64 curTick)
 	}
 	prevTickCount = curTick;
 
-	UpdateMousePicking();
+	// Mouse Picking.
+	// UpdateMousePicking();
 
-	// Update actors.
-	DL_LIST* cur = m_headActorListNode;
-	while (cur != nullptr)
-	{
-		Actor* actor = reinterpret_cast<Actor*>(cur);
-		actor->Update();
-		cur = cur->next;
-	}
+	// Update camera.
+	m_camera->Update();
 
 	// Update text.
 	uint32 cmdListCount = m_renderer->GetCmdListCount();
 	wchar_t buf[36] = {};
 	swprintf_s(buf, L"fps: %d cmdList: %d", m_fps, cmdListCount);
-	uint32 strLen = static_cast<uint32>(wcslen(buf));
-	int32 texWidth = 0;
-	int32 texHeight = 0;
-
-	if (wcscmp(m_gameText, buf))
-	{
-		memset(m_fontImage, 0, m_fontTexWidth * m_fontTexHeight * 4);
-		m_renderer->WriteTextToBitmap(m_fontImage, m_fontTexWidth, m_fontTexHeight, m_fontTexWidth * 4, &texWidth, &texHeight, m_fontObj, buf, strLen, FONT_COLOR_TYPE::SPRING_GREEN);
-		m_renderer->UpdateTextureWidthImage(m_fontTexture, m_fontImage, m_fontTexWidth, m_fontTexHeight);
-		wcscpy_s(m_gameText, buf);
-	}
-
-	// Update dynamic gradation texture.
-	static uint32 count = 0;
-	static uint32 tileColorR = 0;
-	static uint32 tileColorG = 0;
-	static uint32 tileColorB = 0;
-
-	const uint32 tileWidth = 16;
-	const uint32 tileHeight = 16;
-
-	uint32 tileCountX = m_imageWidth / tileWidth;
-	uint32 tileCountY = m_imageHeight / tileHeight;
-
-	if (count >= tileCountX * tileCountY)
-	{
-		count = 0;
-	}
-
-	uint32 tileX = count % tileCountX;
-	uint32 tileY = count / tileCountX;
-
-	uint32 startX = tileX * tileWidth;
-	uint32 startY = tileY * tileHeight;
-
-	uint32 r = tileColorR;
-	uint32 g = tileColorG;
-	uint32 b = tileColorB;
-
-	uint32* dest = reinterpret_cast<uint32*>(m_image);
-	for (uint32 y = 0; y < 16; y++)
-	{
-		for (uint32 x = 0; x < 16; x++)
-		{
-			if (startX + x >= m_imageWidth)
-			{
-				__debugbreak();
-			}
-			if (startY + y >= m_imageHeight)
-			{
-				__debugbreak();
-			}
-
-			dest[(startX + x) + m_imageWidth * (startY + y)] = 0xff000000 | (b << 16) | (g << 8) | r;
-		}
-	}
-
-	count++;
-	tileColorR += 8;
-	if (tileColorR > 255)
-	{
-		tileColorR = 0;
-		tileColorG += 8;
-	}
-	if (tileColorG > 255)
-	{
-		tileColorG = 0;
-		tileColorB += 8;
-	}
-	if (tileColorB > 255)
-	{
-		tileColorB = 0;
-	}
-
-	if (m_dynamicTexture)
-	{
-		m_renderer->UpdateTextureWidthImage(m_dynamicTexture, m_image, m_imageWidth, m_imageHeight);
-	}
+	m_textUI->Update(buf);
 }
 
 void Game::UpdateMousePicking()
@@ -366,47 +232,81 @@ void Game::UpdateMousePicking()
 
 Actor* Game::IntersectActor(float ndcX, float ndcY, Vector3* prevPos, float* prevRatio)
 {
-	float hitDist = 0.0f;
-	DL_LIST* cur = m_headActorListNode;
-	while (cur != nullptr)
-	{
-		Actor* actor = reinterpret_cast<Actor*>(cur);
-		DirectX::BoundingBox boundingBox = actor->GetBoundingBox();
-		bool pick = m_renderer->MousePicking(boundingBox, ndcX, ndcY, prevPos, &hitDist, prevRatio);
-		if (pick)
-		{
-			return actor;
-		}
-		cur = cur->next;
-	}
+	//float hitDist = 0.0f;
+	//DL_LIST* cur = m_headActorListNode;
+	//while (cur != nullptr)
+	//{
+	//	Actor* actor = reinterpret_cast<Actor*>(cur);
+	//	DirectX::BoundingBox boundingBox = actor->GetBoundingBox();
+	//	bool pick = m_renderer->MousePicking(boundingBox, ndcX, ndcY, prevPos, &hitDist, prevRatio);
+	//	if (pick)
+	//	{
+	//		return actor;
+	//	}
+	//	cur = cur->next;
+	//}
 	return nullptr;
 }
 
 void Game::Render()
 {
-	// Render the mesh object.
-	// m_renderer->RenderMeshObject(m_meshObj, Matrix::Identity);
-
-	// Render actors.
-	DL_LIST* cur = m_headActorListNode;
-	while (cur != nullptr)
-	{
-		Actor* actor = reinterpret_cast<Actor*>(cur);
-		actor->Render();
-		cur = cur->next;
-	}
+	// Render character.
+	m_character_01->Render();
 
 	// Render text.
-	// ====================
-	// WWARNING!!!
-	// ====================
-	// 같은 sprite obj 에 대해서 멀티쓰레드 렌더링을 시도할 경우 플리커링 현상이 발생한다.
-	uint32 offset = 10;
-	uint32 posX = m_screenWidth - m_fontTexWidth - offset;
-	uint32 posY = offset;
-	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj0, posX, posY, 1.0f, 1.0f, 0.0f, nullptr, m_fontTexture, "text");
-	// Render dynamic gradation texture.
-	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj1, 100, 100, 0.5f, 0.5f, 0.0f, nullptr, m_dynamicTexture, "gradation");
-	// Render line object.
-	m_renderer->RenderLineObject(m_lineObj, Matrix());
+	m_textUI->Render();
+
+	// Render Coordinate object.
+	m_coordObj->Render();
+}
+
+void Game::CleanCamera()
+{
+	if (m_camera)
+	{
+		delete m_camera;
+		m_camera = nullptr;
+	}
+}
+
+void Game::CleanActorLists()
+{
+	for (uint32 i = 0; i < m_htActors->tableSize; i++)
+	{
+		DL_LIST* cur = m_htActors->headList[i];
+		while (cur != nullptr)
+		{
+			DL_LIST* next = cur->next;
+			Bucket* bucket = reinterpret_cast<Bucket*>(cur);
+			Actor* actor = reinterpret_cast<Actor*>(bucket->value);
+
+			if (actor)
+			{
+				delete actor;
+				actor = nullptr;
+			}
+
+			cur = next;
+		}
+	}
+
+	if (m_htActors)
+	{
+		HT_DestroyHashTable(m_htActors);
+	}
+
+	if (m_cube)
+	{
+		GeometryGenerator::DestroyGeometry(m_cube);
+		m_cube = nullptr;
+	}
+}
+
+void Game::CleanCharacters()
+{
+	if (m_character_01)
+	{
+		delete m_character_01;
+		m_character_01 = nullptr;
+	}
 }

@@ -104,6 +104,10 @@ LRESULT Application::MemberWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 			{
 				::PostQuitMessage(998);
 			}
+			if (keyCode == 'F') // First person view.
+			{
+				m_fpv = !m_fpv;
+			}
 		}
 		break;
 		case WM_KEYUP:
@@ -192,14 +196,17 @@ bool Application::InitModule(bool enableDebugLayer, bool enableGBV)
 
 void Application::UpdateMouse()
 {
-	float ndcX = static_cast<float>(m_mousePosX) / m_screenWidth * 2.0f - 1.0f;
-	float ndcY = static_cast<float>(m_mousePosY) / m_screenHeight * -2.0f + 1.0f;
+	if (m_fpv)
+	{
+		float ndcX = static_cast<float>(m_mousePosX) / m_screenWidth * 2.0f - 1.0f;
+		float ndcY = static_cast<float>(m_mousePosY) / m_screenHeight * -2.0f + 1.0f;
 
-	ndcX = F_Clamp(ndcX, -1.0f, 1.0f);
-	ndcY = F_Clamp(ndcY, -1.0f, 1.0f);
+		ndcX = F_Clamp(ndcX, -1.0f, 1.0f);
+		ndcY = F_Clamp(ndcY, -1.0f, 1.0f);
 
-	m_ndcMousePosX = ndcX;
-	m_ndcMousePosY = ndcY;
+		m_ndcMousePosX = ndcX;
+		m_ndcMousePosY = ndcY;
+	}
 }
 
 void Application::CleanUpWindow()
