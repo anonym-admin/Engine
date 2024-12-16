@@ -11,6 +11,7 @@ class Actor;
 interface IT_Renderer;
 interface IT_MeshObject;
 interface IT_SpriteObject;
+interface IT_LineObject;
 
 class Game
 {
@@ -24,11 +25,15 @@ public:
 
 private:
 	void Update(uint64 curTick);
+	void UpdateMousePicking();
+	Actor* IntersectActor(float ndcX, float ndcY, Vector3* prevPos, float* prevRatio);
 	void Render();
 
 private:
 	Application* m_app = nullptr;
 	IT_Renderer* m_renderer = nullptr;
+	uint32 m_screenWidth = 0;
+	uint32 m_screenHeight = 0;
 	uint32 m_fps = 0;
 	// Mesh object.
 	IT_MeshObject* m_meshObj = nullptr;
@@ -54,5 +59,8 @@ private:
 	uint8* m_fontImage = nullptr;
 
 	wchar_t m_gameText[256] = {};
+	// Line
+	IT_LineObject* m_lineObj = nullptr;
+	LineData* m_lineData = nullptr;
 };
 

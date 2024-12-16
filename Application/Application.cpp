@@ -91,43 +91,62 @@ LRESULT Application::MemberWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 {
 	switch (msg)
 	{
-	case WM_SIZE:
-	{
-		int32 width = LOWORD(lParam);  // Macro to get the low-order word.
-		int32 height = HIWORD(lParam); // Macro to get the high-order word.
-	}
-	break;
-	case WM_KEYDOWN:
-	{
-		int32 keyCode = (int32)wParam;
-		if (keyCode == VK_ESCAPE)
+		case WM_SIZE:
 		{
-			::PostQuitMessage(998);
+			int32 width = LOWORD(lParam);  // Macro to get the low-order word.
+			int32 height = HIWORD(lParam); // Macro to get the high-order word.
 		}
-	}
-	break;
-	case WM_KEYUP:
-	{
-	}
-	break;
-	case WM_MOUSEMOVE:
-	{
-	}
-	break;
-	case WM_LBUTTONDOWN:
-	{
-	}
-	break;
-	case WM_LBUTTONUP:
-	{
-	}
-	break;
-	case WM_DESTROY:
-	{
-		::PostQuitMessage(999);
-	}
-	break;
-	}
+		break;
+		case WM_KEYDOWN:
+		{
+			int32 keyCode = (int32)wParam;
+			if (keyCode == VK_ESCAPE)
+			{
+				::PostQuitMessage(998);
+			}
+		}
+		break;
+		case WM_KEYUP:
+		{
+		}
+		break;
+		case WM_MOUSEMOVE:
+		{
+			int32 posX = LOWORD(lParam);
+			int32 posY = HIWORD(lParam);
+
+			m_mousePosX = posX;
+			m_mousePosY = posY;
+
+			UpdateMouse();
+		}
+		break;
+		case WM_LBUTTONDOWN:
+		{
+			m_mouseLeftButton = true;
+		}
+		break;
+		case WM_LBUTTONUP:
+		{
+			m_mouseLeftButton = false;
+		}
+		break;
+		case WM_RBUTTONDOWN:
+		{
+			m_mouseRightButton = true;
+		}
+		break;
+		case WM_RBUTTONUP:
+		{
+			m_mouseRightButton = false;
+		}
+		break;
+		case WM_DESTROY:
+		{
+			::PostQuitMessage(999);
+		}
+		break;
+		}
 	return ::DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
@@ -147,6 +166,11 @@ bool Application::InitWindow()
 
 	::ShowWindow(m_hwnd, SW_SHOW);
 
+	RECT rt = {};
+	::GetClientRect(m_hwnd, &rt);
+	m_screenWidth = static_cast<uint32>(rt.right - rt.left);
+	m_screenHeight = static_cast<uint32>(rt.bottom - rt.top);
+
 	return true;
 }
 
@@ -164,6 +188,18 @@ bool Application::InitModule(bool enableDebugLayer, bool enableGBV)
 		return false;
 	}
 	return true;
+}
+
+void Application::UpdateMouse()
+{
+	float ndcX = static_cast<float>(m_mousePosX) / m_screenWidth * 2.0f - 1.0f;
+	float ndcY = static_cast<float>(m_mousePosY) / m_screenHeight * -2.0f + 1.0f;
+
+	ndcX = F_Clamp(ndcX, -1.0f, 1.0f);
+	ndcY = F_Clamp(ndcY, -1.0f, 1.0f);
+
+	m_ndcMousePosX = ndcX;
+	m_ndcMousePosY = ndcY;
 }
 
 void Application::CleanUpWindow()

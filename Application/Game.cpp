@@ -24,6 +24,11 @@ bool Game::InitGame(Application* app)
 
 	m_app = app;
 
+	RECT rect = {};
+	GetClientRect(m_app->GetHwnd(), &rect);
+	m_screenWidth = rect.right - rect.left;
+	m_screenHeight = rect.bottom - rect.top;
+
 	// Set camera position.
 	m_renderer->SetCameraPos(0.0f, 0.0f, -5.0f);
 
@@ -36,7 +41,7 @@ bool Game::InitGame(Application* app)
 	//m_meshObj->SetTransform(Matrix::Identity);
 
 	// Set the actors.
-	const uint32 NUM_ACTORS = 200;
+	const uint32 NUM_ACTORS = 20;
 	for (uint32 i = 0; i < NUM_ACTORS; i++)
 	{
 	    Actor* actor = new Actor;
@@ -53,8 +58,8 @@ bool Game::InitGame(Application* app)
 
 	// Set the font object.
 	m_fontTexWidth = 256;
-	m_fontTexHeight = 256;
-	m_fontObj = m_renderer->CreateFontObject(L"Consolas", 18);
+	m_fontTexHeight = 64;
+	m_fontObj = m_renderer->CreateFontObject(L"Consolas", 12);
 	m_fontTexture = m_renderer->CreateDynamicTexture(m_fontTexWidth, m_fontTexHeight, "font");
 	m_fontImage = (uint8*)malloc(m_fontTexWidth * m_fontTexHeight * 4);
 
@@ -74,11 +79,46 @@ bool Game::InitGame(Application* app)
 	m_spriteObj0 = m_renderer->CreateSpriteObject();
 	m_spriteObj1 = m_renderer->CreateSpriteObject();
 
+	// Create the line object.
+	m_lineObj = m_renderer->CreateLineObject();
+	m_lineData = new LineData;
+	m_lineData->numVertices = 6;
+	m_lineData->vertices = new LineVertex[6];
+	
+	m_lineData->vertices[0].position = Vector3(0.0f, 0.0f, 0.0f);
+	m_lineData->vertices[1].position = Vector3(0.0f, 1.0f, 0.0f);
+	m_lineData->vertices[2].position = Vector3(0.0f, 0.0f, 0.0f);
+	m_lineData->vertices[3].position = Vector3(1.0f, 0.0f, 0.0f);
+	m_lineData->vertices[4].position = Vector3(0.0f, 0.0f, 0.0f);
+	m_lineData->vertices[5].position = Vector3(0.0f, 0.0f, 1.0f);
+	m_lineData->vertices[0].color = Vector3(1.0f, 0.0f, 1.0f);
+	m_lineData->vertices[1].color = Vector3(1.0f, 0.0f, 1.0f);
+	m_lineData->vertices[2].color = Vector3(0.0f, 1.0f, 0.0f);
+	m_lineData->vertices[3].color = Vector3(0.0f, 1.0f, 0.0f);
+	m_lineData->vertices[4].color = Vector3(1.0f, 0.0f, 0.0f);
+	m_lineData->vertices[5].color = Vector3(1.0f, 0.0f, 0.0f);
+
+	m_lineObj->CreateLineBuffers(m_lineData);
+
 	return true;
 }
 
 void Game::CleanUpGame()
 {
+	if (m_lineData)
+	{
+		if (m_lineData->vertices)
+		{
+			delete[] m_lineData->vertices;
+			m_lineData->vertices = nullptr;
+		}
+		delete m_lineData;
+	}
+	if (m_lineObj)
+	{
+		m_lineObj->Release();
+		m_lineObj = nullptr;
+	}
 	if (m_spriteObj1)
 	{
 		m_spriteObj1->Release();
@@ -181,6 +221,8 @@ void Game::Update(uint64 curTick)
 	}
 	prevTickCount = curTick;
 
+	UpdateMousePicking();
+
 	// Update actors.
 	DL_LIST* cur = m_headActorListNode;
 	while (cur != nullptr)
@@ -191,8 +233,9 @@ void Game::Update(uint64 curTick)
 	}
 
 	// Update text.
+	uint32 cmdListCount = m_renderer->GetCmdListCount();
 	wchar_t buf[36] = {};
-	swprintf_s(buf, L"fps: %d", m_fps);
+	swprintf_s(buf, L"fps: %d cmdList: %d", m_fps, cmdListCount);
 	uint32 strLen = static_cast<uint32>(wcslen(buf));
 	int32 texWidth = 0;
 	int32 texHeight = 0;
@@ -200,7 +243,7 @@ void Game::Update(uint64 curTick)
 	if (wcscmp(m_gameText, buf))
 	{
 		memset(m_fontImage, 0, m_fontTexWidth * m_fontTexHeight * 4);
-		m_renderer->WriteTextToBitmap(m_fontImage, m_fontTexWidth, m_fontTexHeight, m_fontTexWidth * 4, &texWidth, &texHeight, m_fontObj, buf, strLen);
+		m_renderer->WriteTextToBitmap(m_fontImage, m_fontTexWidth, m_fontTexHeight, m_fontTexWidth * 4, &texWidth, &texHeight, m_fontObj, buf, strLen, FONT_COLOR_TYPE::SPRING_GREEN);
 		m_renderer->UpdateTextureWidthImage(m_fontTexture, m_fontImage, m_fontTexWidth, m_fontTexHeight);
 		wcscpy_s(m_gameText, buf);
 	}
@@ -273,6 +316,72 @@ void Game::Update(uint64 curTick)
 	}
 }
 
+void Game::UpdateMousePicking()
+{
+	static Vector3 prevPos = Vector3(0.0f);
+	static float prevRatio = 0.0f;
+	static Actor* selected = nullptr;
+	bool leftBtn = m_app->IsLeftBtnDown();
+	bool rightBtn = m_app->IsRightBtnDown();
+	float ndcX = m_app->GetNdcMousePosX();
+	float ndcY = m_app->GetNdcMousePosY();
+
+	if (m_app->IsLeftBtnDown() || m_app->IsRightBtnDown())
+	{
+		if (!selected)
+		{
+			Actor* actor = IntersectActor(ndcX, ndcY, &prevPos, &prevRatio);
+			if (actor)
+			{
+				selected = actor;
+			}
+		}
+		else
+		{
+			if (leftBtn || rightBtn)
+			{
+				if (leftBtn) // Move
+				{
+					Vector3 curPos = Vector3(0.0f);
+					m_renderer->MousePickingAfterMoveObject(ndcX, ndcY, &curPos, prevRatio);
+					float moveLen = (curPos - prevPos).Length();
+
+					if (moveLen >= 1e-5)
+					{
+						selected->MovePosition(curPos - prevPos);
+						prevPos = curPos;
+					}
+				}
+				else // Rotation
+				{
+				}
+			}
+		}
+	}
+	else
+	{
+		selected = nullptr;
+	}
+}
+
+Actor* Game::IntersectActor(float ndcX, float ndcY, Vector3* prevPos, float* prevRatio)
+{
+	float hitDist = 0.0f;
+	DL_LIST* cur = m_headActorListNode;
+	while (cur != nullptr)
+	{
+		Actor* actor = reinterpret_cast<Actor*>(cur);
+		DirectX::BoundingBox boundingBox = actor->GetBoundingBox();
+		bool pick = m_renderer->MousePicking(boundingBox, ndcX, ndcY, prevPos, &hitDist, prevRatio);
+		if (pick)
+		{
+			return actor;
+		}
+		cur = cur->next;
+	}
+	return nullptr;
+}
+
 void Game::Render()
 {
 	// Render the mesh object.
@@ -292,7 +401,12 @@ void Game::Render()
 	// WWARNING!!!
 	// ====================
 	// 같은 sprite obj 에 대해서 멀티쓰레드 렌더링을 시도할 경우 플리커링 현상이 발생한다.
-	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj0, 300, 300, 1.0f, 1.0f, 0.0f, nullptr, m_fontTexture, "text");
+	uint32 offset = 10;
+	uint32 posX = m_screenWidth - m_fontTexWidth - offset;
+	uint32 posY = offset;
+	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj0, posX, posY, 1.0f, 1.0f, 0.0f, nullptr, m_fontTexture, "text");
 	// Render dynamic gradation texture.
 	m_renderer->RenderSpriteObjectWithTexture(m_spriteObj1, 100, 100, 0.5f, 0.5f, 0.0f, nullptr, m_dynamicTexture, "gradation");
+	// Render line object.
+	m_renderer->RenderLineObject(m_lineObj, Matrix());
 }

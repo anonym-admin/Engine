@@ -23,7 +23,8 @@ bool Actor::Initialize(IT_Renderer* renderer)
 {
     m_renderer = renderer;
 
-    m_cube = GeometryGenerator::MakeCube(0.2f);
+    const float cubeScale = 0.2f;
+    m_cube = GeometryGenerator::MakeCube(cubeScale);
 
     const wchar_t* basePath = L"../../Assets/";
     const wchar_t* textureFilenames[] = {
@@ -47,6 +48,7 @@ bool Actor::Initialize(IT_Renderer* renderer)
     m_meshObj = m_renderer->CreateMeshObject();
     m_meshObj->CreateMeshBuffers(m_cube);
     m_meshObj->SetTransform(m_transform);
+    m_boundingBox = DirectX::BoundingBox(m_pos, Vector3(cubeScale * 2, cubeScale * 2, cubeScale * 2));
 
     return true;
 }
@@ -79,4 +81,13 @@ void Actor::SetPosition(Vector3 pos)
     m_pos = pos;
     m_transform = Matrix::CreateTranslation(pos);
     m_meshObj->SetTransform(m_transform);
+
+    m_boundingBox.Center = pos;
+}
+
+void Actor::MovePosition(Vector3 deltaPos)
+{
+    Vector3 translation = m_transform.Translation();
+    
+    SetPosition(translation + deltaPos);
 }

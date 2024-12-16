@@ -36,6 +36,9 @@
     <ClCompile Include="Actor.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="EasyMath.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\Type.h">
@@ -64,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="Actor.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyMath.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

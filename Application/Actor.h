@@ -23,6 +23,8 @@ public:
 	void Render();
 
 	void SetPosition(Vector3 pos);
+	void MovePosition(Vector3 deltaPos);
+	inline DirectX::BoundingBox GetBoundingBox() { return m_boundingBox; }
 
 	DL_LIST actorLink;
 
@@ -34,5 +36,7 @@ private:
 	Vector3 m_pos = Vector3(0.0f);
 	void* m_texture0 = nullptr;
 	float m_dt = 0.0f;
+
+	DirectX::BoundingBox m_boundingBox = {};
 };
 

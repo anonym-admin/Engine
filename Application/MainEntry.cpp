@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 #endif
 
 	Application* app = new Application;
-	if (!app->Initialize(true, true)) // app->Initialize(false, false) / app->Initialize(true, true)
+	if (!app->Initialize(false, false)) // app->Initialize(false, false) / app->Initialize(true, true)
 	{
 		return -1;
 	}

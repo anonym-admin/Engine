@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="EasyMath.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="MainEntry.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="..\..\Interface\IT_Renderer.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="EasyMath.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="pch.h" />
