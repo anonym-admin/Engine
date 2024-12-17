@@ -12,14 +12,13 @@
 #include <windows.h>
 #include <time.h>
 
-
-
 // my lib.
 #include "../../Common/MeshData.h"
 #include "../../CommonLib/CommonLib/LinkedList.h"
 #include "../../CommonLib/CommonLib/HashTable.h"
 #include "../../CommonLib/CommonLib/GenericUtils.h"
-#include "../../Interface/IT_Renderer.h"
-#include "EngineType.h"
+#include "../../Interface/IT_EngineCore.h"
+
+
 
 

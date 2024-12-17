@@ -7,20 +7,14 @@
     <Filter Include="EntryPoint">
       <UniqueIdentifier>{d8511393-2f07-4a9e-9c14-e75e63b154cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Interface">
-      <UniqueIdentifier>{b96da30d-b443-4788-a845-d68ef089a734}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{0dde2e36-cef7-4e88-8b68-c399e7de8138}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{5b1714da-5d9e-4cea-94ab-6d9c4ae036f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Object">
-      <UniqueIdentifier>{34046ab8-1b4f-4dd2-bb1f-d388a4e5598f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Main\UI">
-      <UniqueIdentifier>{20080dcc-7a42-4cbb-a7db-6f726da79901}</UniqueIdentifier>
+    <Filter Include="Interface">
+      <UniqueIdentifier>{b96da30d-b443-4788-a845-d68ef089a734}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,34 +30,13 @@
     <ClCompile Include="pch.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryGenerator.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Actor.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="EasyMath.cpp">
       <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterObject_01.cpp">
-      <Filter>Main\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="CoordinateObject.cpp">
-      <Filter>Main\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="TextUI.cpp">
-      <Filter>Main\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\Type.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Interface\IT_Renderer.h">
-      <Filter>Interface</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Main</Filter>
@@ -74,33 +47,17 @@
     <ClInclude Include="pch.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="GeometryGenerator.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Common\MeshData.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\Vertex.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Actor.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="EasyMath.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineType.h" />
-    <ClInclude Include="CoordinateObject.h">
-      <Filter>Main\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterObject_01.h">
-      <Filter>Main\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="TextUI.h">
-      <Filter>Main\UI</Filter>
+    <ClInclude Include="..\..\Interface\IT_EngineCore.h">
+      <Filter>Interface</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

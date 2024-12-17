@@ -37,7 +37,7 @@ bool Application::Initialize(bool enableDebugLayer, bool enableGBV)
 	{
 		return false;
 	}
-	if (!InitModule(enableDebugLayer, enableGBV))
+	if (!InitEngine(enableDebugLayer, enableGBV))
 	{
 		return false;
 	}
@@ -60,8 +60,8 @@ void Application::CleanUp()
 		m_game = nullptr;
 	}
 
-	CleanUpModule();
-	CleanUpWindow();
+	CleanEngine();
+	CleanWindow();
 }
 
 int32 Application::RunApplication()
@@ -178,16 +178,16 @@ bool Application::InitWindow()
 	return true;
 }
 
-bool Application::InitModule(bool enableDebugLayer, bool enableGBV)
+bool Application::InitEngine(bool enableDebugLayer, bool enableGBV)
 {
-	m_rendererDll = ::LoadLibrary(L"./RendererD3D12.dll");
-	if (!m_rendererDll)
+	m_engineCoreDll = ::LoadLibrary(L"./EngineCore.dll");
+	if (!m_engineCoreDll)
 	{
 		__debugbreak();
 	}
-	Dll_CreateInstance CreateInstance = (Dll_CreateInstance)::GetProcAddress(m_rendererDll, "Dll_CreateInstance");
-	CreateInstance(reinterpret_cast<void**>(&m_renderer));
-	if (!m_renderer->Initialize(m_hwnd, enableDebugLayer, enableGBV))
+	Dll_CreateInstance CreateInstance = (Dll_CreateInstance)::GetProcAddress(m_engineCoreDll, "Dll_CreateInstance");
+	CreateInstance(reinterpret_cast<void**>(&m_engineCore));
+	if (!m_engineCore->Initialize(m_hwnd, enableDebugLayer, enableGBV))
 	{
 		return false;
 	}
@@ -209,7 +209,7 @@ void Application::UpdateMouse()
 	}
 }
 
-void Application::CleanUpWindow()
+void Application::CleanWindow()
 {
 	if (m_hwnd)
 	{
@@ -217,16 +217,16 @@ void Application::CleanUpWindow()
 	}
 }
 
-void Application::CleanUpModule()
+void Application::CleanEngine()
 {
-	if (m_renderer)
+	if (m_engineCore)
 	{
-		m_renderer->Release();
-		m_renderer = nullptr;
+		m_engineCore->Release();
+		m_engineCore = nullptr;
 	}
-	if (m_rendererDll)
+	if (m_engineCoreDll)
 	{
-		::FreeLibrary(m_rendererDll);
+		::FreeLibrary(m_engineCoreDll);
 	}
 }
 

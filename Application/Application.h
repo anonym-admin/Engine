@@ -19,7 +19,7 @@ public:
 	int32 RunApplication();
 	LRESULT CALLBACK MemberWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-	inline IT_Renderer* GetRenderer() { return m_renderer; }
+	inline IT_EngineCore* GetEngineCore() { return m_engineCore; }
 	inline HWND GetHwnd() { return m_hwnd; }
 	inline uint32 GetMousePosX() { return m_mousePosX; }
 	inline uint32 GetMousePosY() { return m_mousePosY; }
@@ -30,15 +30,15 @@ public:
 
 private:
 	bool InitWindow();
-	bool InitModule(bool enableDebugLayer, bool enableGBV);
+	bool InitEngine(bool enableDebugLayer, bool enableGBV);
 	void UpdateMouse();
-	void CleanUpWindow();
-	void CleanUpModule();
+	void CleanWindow();
+	void CleanEngine();
 
 private:
 	HWND m_hwnd = nullptr;
-	HMODULE m_rendererDll = nullptr;
-	IT_Renderer* m_renderer = nullptr;
+	HMODULE m_engineCoreDll = nullptr;
+	IT_EngineCore* m_engineCore = nullptr;
 	Game* m_game = nullptr;
 	uint32 m_screenWidth = 0;
 	uint32 m_screenHeight = 0;
