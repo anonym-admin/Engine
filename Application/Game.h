@@ -32,6 +32,7 @@ private:
 	uint32 m_screenWidth = 0;
 	uint32 m_screenHeight = 0;
 	uint32 m_fps = 0;
-
+	IT_TextUI* m_textUI = nullptr;
+	IT_GeometryObject* m_geometryObj = nullptr;
 };
 

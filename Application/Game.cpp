@@ -25,6 +25,23 @@ bool Game::InitGame(Application* app)
 	GetClientRect(m_app->GetHwnd(), &rect);
 	m_screenWidth = rect.right - rect.left;
 	m_screenHeight = rect.bottom - rect.top;
+
+	// Create world.
+	IT_World* world = m_engineCore->CreateWorld(L"WORLD_01");
+	m_engineCore->AddWorld(world);
+	// Create Level.
+	IT_Level* level = m_engineCore->CreateLevel(L"LEVEL_01");
+	world->AddLevel(level);
+	// Create Game Object.
+	IT_TextUI* textUI = m_engineCore->CreateTextUI(256, 64, 100, 100, 1.0f, 1.0f, 0.0f, L"Consolas", 14, nullptr);
+	level->AddGmaeObject(textUI, GAME_OBJ_TYPE::UI);
+	m_textUI = textUI;
+
+	IT_CoordinateObject* coordObj = m_engineCore->CreateCoordinateObject();
+	level->AddGmaeObject(coordObj, GAME_OBJ_TYPE::COORDINATE);
+
+	world->SetCurrentLevel();
+	world->BeginWorld();
 	
 	return true;
 }
@@ -35,20 +52,12 @@ void Game::CleanUpGame()
 
 void Game::RunGame()
 {
-	static uint32 fps = 0;
-	static uint64 prevTickCount = 0;
-	fps++;
-
-	uint64 curTickCount = ::GetTickCount64();
+	// Update text.
+	wchar_t buf[36] = {};
+	swprintf_s(buf, L"fps: %d dt: %f", m_engineCore->GetFps(), m_engineCore->GetDeltaTime());
+	m_textUI->WriteText(buf);
 
 	m_engineCore->Tick();
-
-	if (curTickCount - prevTickCount > 1000)
-	{
-		m_fps = fps;
-		fps = 0;
-		prevTickCount = curTickCount;
-	}
 }
 
 void Game::Update(uint64 curTick)

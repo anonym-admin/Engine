@@ -14,6 +14,7 @@
 
 // my lib.
 #include "../../Common/MeshData.h"
+#include "../../Common/EngineType.h"
 #include "../../CommonLib/CommonLib/LinkedList.h"
 #include "../../CommonLib/CommonLib/HashTable.h"
 #include "../../CommonLib/CommonLib/GenericUtils.h"
