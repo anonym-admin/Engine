@@ -37,13 +37,7 @@ bool Game::InitGame(Application* app)
 			IT_Level* levelInGame = m_engineCore->CreateLevelInGame(L"LEVEL_INGAME");
 			world->AddLevel(levelInGame);
 
-			// Create Game Object.
-			{
-				IT_TextUI* textUI = m_engineCore->CreateTextUI(256, 64, 100, 100, 1.0f, 1.0f, 0.0f, L"Consolas", 14, nullptr);
-				levelInGame->AddUI(textUI);
-				m_textUI = textUI;
-			}
-
+			// Create Player.
 			{
 				Player* player = new Player;
 				player->Initialize(m_engineCore, levelInGame, this);
