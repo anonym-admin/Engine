@@ -187,6 +187,7 @@ bool Application::InitEngine(bool enableDebugLayer, bool enableGBV)
 	}
 	Dll_CreateInstance CreateInstance = (Dll_CreateInstance)::GetProcAddress(m_engineCoreDll, "Dll_CreateInstance");
 	CreateInstance(reinterpret_cast<void**>(&m_engineCore));
+
 	if (!m_engineCore->Initialize(m_hwnd, enableDebugLayer, enableGBV))
 	{
 		return false;

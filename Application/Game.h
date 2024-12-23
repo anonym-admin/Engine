@@ -7,6 +7,7 @@ Game
 */
 
 class Application;
+class Player;
 
 class Game
 {
@@ -28,5 +29,7 @@ private:
 	uint32 m_fps = 0;
 	IT_TextUI* m_textUI = nullptr;
 	IT_GeometryObject* m_geometryObj = nullptr;
+	IT_World* m_world = nullptr;
+	Player* m_player = nullptr;
 };
 

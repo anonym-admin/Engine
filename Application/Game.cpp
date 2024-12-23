@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 #include "Application.h"
+#include "Player.h"
 
 /*
 =======
@@ -27,37 +28,73 @@ bool Game::InitGame(Application* app)
 	m_screenHeight = rect.bottom - rect.top;
 
 	// Create world.
-	IT_World* world = m_engineCore->CreateWorld(L"WORLD_01");
-	m_engineCore->AddWorld(world);
-	// Create Level.
-	IT_Level* level = m_engineCore->CreateLevel(L"LEVEL_01");
-	world->AddLevel(level);
-	// Create Game Object.
-	IT_TextUI* textUI = m_engineCore->CreateTextUI(256, 64, 100, 100, 1.0f, 1.0f, 0.0f, L"Consolas", 14, nullptr);
-	level->AddUI(textUI);
-	m_textUI = textUI;
+	{
+		IT_World* world = m_engineCore->CreateWorld(L"WORLD_01");
+		m_engineCore->AddWorld(world);
 
-	IT_CoordinateObject* coordObj = m_engineCore->CreateCoordinateObject();
-	level->AddGmaeObject(coordObj, GAME_OBJ_TYPE::COORDINATE);
+		// Create Level.
+		{
+			IT_Level* levelInGame = m_engineCore->CreateLevelInGame(L"LEVEL_INGAME");
+			world->AddLevel(levelInGame);
 
-	world->SetCurrentLevel();
-	world->BeginWorld();
+			// Create Game Object.
+			{
+				IT_TextUI* textUI = m_engineCore->CreateTextUI(256, 64, 100, 100, 1.0f, 1.0f, 0.0f, L"Consolas", 14, nullptr);
+				levelInGame->AddUI(textUI);
+				m_textUI = textUI;
+			}
+
+			{
+				Player* player = new Player;
+				player->Initialize(m_engineCore, levelInGame, this);
+				m_player = player;
+			}
+		}
+
+		{
+			IT_Level* levelLoading = m_engineCore->CreateLevelLoading(L"LEVEL_LOADING");
+			world->AddLevel(levelLoading);
+		}
+
+		world->SetCurrentLevel(1);
+		world->BeginWorld();
+
+		m_world = world;
+	}
 	
 	return true;
 }
 
 void Game::CleanUpGame()
 {
+	if (m_player)
+	{
+		delete m_player;
+		m_player = nullptr;
+	}
 }
 
 void Game::RunGame()
 {
-	// Update text.
-	wchar_t buf[36] = {};
-	swprintf_s(buf, L"fps: %d dt: %f", m_engineCore->GetFps(), m_engineCore->GetDeltaTime());
-	m_textUI->WriteText(buf);
+	static float accTime = 0.0f;
 
-	m_engineCore->Tick();
+	if (accTime >= 0.016f)
+	{
+		if (m_engineCore->KeyDown(KEY_INPUT_M))
+		{
+			m_world->SetCurrentLevel(0);
+			m_world->BeginWorld();
+		}
+	}
+
+	m_engineCore->Tick(accTime);
+
+	if (accTime >= 0.016f)
+	{
+		accTime = 0.0f;
+	}
+
+	accTime += m_engineCore->GetDeltaTime();
 }
 
 
