@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Application.h"
 #include "Player.h"
+#include "SceneManager.h"
 
 /*
 =======
@@ -15,80 +16,56 @@ Game::Game()
 
 Game::~Game()
 {
+	CleanUpGame();
 }
 
 bool Game::InitGame(Application* app)
 {
 	m_app = app;
 	m_engineCore = app->GetEngineCore();
+	m_renderer = m_engineCore->GetRenderer();
 
 	RECT rect = {};
 	GetClientRect(m_app->GetHwnd(), &rect);
 	m_screenWidth = rect.right - rect.left;
 	m_screenHeight = rect.bottom - rect.top;
 
-	// Create world.
-	{
-		IT_World* world = m_engineCore->CreateWorld(L"WORLD_01");
-		m_engineCore->AddWorld(world);
+	// Initialize scene.
+	m_sceneManager = new SceneManager;
+	m_sceneManager->Initialize(this, 8);
 
-		// Create Level.
-		{
-			IT_Level* levelInGame = m_engineCore->CreateLevelInGame(L"LEVEL_INGAME");
-			world->AddLevel(levelInGame);
-
-			// Create Player.
-			{
-				Player* player = new Player;
-				player->Initialize(m_engineCore, levelInGame, this);
-				m_player = player;
-			}
-		}
-
-		{
-			IT_Level* levelLoading = m_engineCore->CreateLevelLoading(L"LEVEL_LOADING");
-			world->AddLevel(levelLoading);
-		}
-
-		world->SetCurrentLevel(1);
-		world->BeginWorld();
-
-		m_world = world;
-	}
-	
 	return true;
 }
 
 void Game::CleanUpGame()
 {
-	if (m_player)
+	if (m_sceneManager)
 	{
-		delete m_player;
-		m_player = nullptr;
+		delete m_sceneManager;
+		m_sceneManager = nullptr;
 	}
 }
 
 void Game::RunGame()
 {
-	static float accTime = 0.0f;
+	m_engineCore->BeginGameLogic();
+	Update(m_engineCore->GetDeltaTime());
+	m_engineCore->EndGameLogic();
 
-	if (accTime >= 0.016f)
-	{
-		if (m_engineCore->KeyDown(KEY_INPUT_M))
-		{
-			m_world->SetCurrentLevel(0);
-			m_world->BeginWorld();
-		}
-	}
+	m_renderer->BeginRender();
+	Render();
+	m_renderer->EndRender();
+	m_renderer->Present();
+}
 
-	m_engineCore->Tick(accTime);
+void Game::Update(const float dt)
+{
+	m_sceneManager->Update(dt);
+}
 
-	if (accTime >= 0.016f)
-	{
-		accTime = 0.0f;
-	}
-
-	accTime += m_engineCore->GetDeltaTime();
+void Game::Render()
+{
+	m_sceneManager->Render();
 }
 
 

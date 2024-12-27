@@ -3,16 +3,16 @@
 #include "GameObject.h"
 
 /*
-========
-Player
-========
+==========
+Monster
+==========
 */
 
-class Player : public GameObject
+class Monster : public GameObject
 {
 public:
-	Player();
-	~Player();
+	Monster();
+	~Monster();
 
 	bool Initialize(IT_EngineCore* engineCore);
 	virtual void Update(const float dt) override;

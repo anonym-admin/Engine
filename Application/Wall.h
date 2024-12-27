@@ -4,15 +4,15 @@
 
 /*
 ========
-Player
+Wall
 ========
 */
 
-class Player : public GameObject
+class Wall : public GameObject
 {
 public:
-	Player();
-	~Player();
+	Wall();
+	~Wall();
 
 	bool Initialize(IT_EngineCore* engineCore);
 	virtual void Update(const float dt) override;
@@ -21,13 +21,13 @@ public:
 	virtual void SetScale(Vector3 scale) override;
 	virtual void SetRotation(Vector3 rotation) override;
 	virtual void SetPosition(Vector3 pos) override;
-	IT_CharacterObject* GetCharacterObject() { return m_characterObj; }
+	IT_BuildingObject* GetMyObject() { return m_buildingObj; }
 
 private:
 	void CleanUp();
 
 private:
 	IT_EngineCore* m_engineCore = nullptr;
-	IT_CharacterObject* m_characterObj = nullptr;
+	IT_BuildingObject* m_buildingObj = nullptr;
 };
 

@@ -1,60 +1,60 @@
 #include "pch.h"
-#include "Player.h"
+#include "Monster.h"
 
 /*
-========
-Player
-========
+==========
+Monster
+==========
 */
 
-Player::Player()
+Monster::Monster()
 {
 }
 
-Player::~Player()
+Monster::~Monster()
 {
     CleanUp();
 }
 
-bool Player::Initialize(IT_EngineCore* engineCore)
+bool Monster::Initialize(IT_EngineCore* engineCore)
 {
     m_engineCore = engineCore;
 
     void* actor = m_engineCore->GetActor(0);
-    m_characterObj = m_engineCore->CreateCharacterObject(actor, 0);
+    m_characterObj = m_engineCore->CreateCharacterObject(actor, 1);
 
     return true;
 }
 
-void Player::Update(const float dt)
+void Monster::Update(const float dt)
 {
     m_engineCore->UpdateMousePicking(m_characterObj);
 }
 
-void Player::Render()
+void Monster::Render()
 {
     m_engineCore->RenderCharacterObject(m_characterObj, IsWire());
 }
 
-void Player::SetScale(Vector3 scale)
+void Monster::SetScale(Vector3 scale)
 {
     GameObject::SetScale(scale);
     m_characterObj->SetScale(scale.x, scale.y, scale.z);
 }
 
-void Player::SetRotation(Vector3 rotation)
+void Monster::SetRotation(Vector3 rotation)
 {
     GameObject::SetRotation(rotation);
     m_characterObj->SetRotation(rotation.x, rotation.y, rotation.z);
 }
 
-void Player::SetPosition(Vector3 pos)
+void Monster::SetPosition(Vector3 pos)
 {
     GameObject::SetPosition(pos);
     m_characterObj->SetPosition(pos);
 }
 
-void Player::CleanUp()
+void Monster::CleanUp()
 {
     if (m_characterObj)
     {

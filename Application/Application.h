@@ -1,5 +1,7 @@
 #pragma once
 
+#define EDITOR_MODE 1
+
 /*
 =============
 Application

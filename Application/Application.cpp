@@ -55,7 +55,6 @@ void Application::CleanUp()
 {
 	if (m_game)
 	{
-		m_game->CleanUpGame();
 		delete m_game;
 		m_game = nullptr;
 	}
