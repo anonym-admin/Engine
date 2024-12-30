@@ -21,6 +21,7 @@ public:
 	virtual void SetPosition(Vector3 pos) { m_position = pos; }
 	Vector3 GetPosition() { return m_position; }
 	bool IsWire() { return m_isWire; }
+	virtual IT_BaseObject* GetMyObject() { return nullptr; };
 
 private:
 	Vector3 m_scale = Vector3(1.0f);

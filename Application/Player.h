@@ -21,7 +21,7 @@ public:
 	virtual void SetScale(Vector3 scale) override;
 	virtual void SetRotation(Vector3 rotation) override;
 	virtual void SetPosition(Vector3 pos) override;
-	IT_CharacterObject* GetCharacterObject() { return m_characterObj; }
+	virtual IT_BaseObject* GetMyObject() { return m_characterObj; }
 
 private:
 	void CleanUp();

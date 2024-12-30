@@ -80,8 +80,6 @@ void Editor::Update(const float dt)
 	{
 		return;
 	}
-
-
 }
 
 void Editor::Render()

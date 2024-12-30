@@ -34,7 +34,7 @@ void SceneHome::BeginScene()
 	m_sysInfoUI = m_engineCore->CreateTextUI(m_game->GetScreenWidth(), m_game->GetScreenHeight() / 16, 10, 10, 1.0f, 1.0f, 0.0f, L"Consolas", 14);
 
 	// Terrain.
-	m_terrain = m_engineCore->CreateTerrain(50.0f, nullptr);
+	m_terrain = m_engineCore->CreateTerrain(100.0f, nullptr);
 
 	Vector3 playerPos = Vector3(0.0f, 0.0f, -1.0f);
 	Vector3 camPos = playerPos - Vector3(0.0f, 0.0f, 5.0f);
@@ -51,11 +51,11 @@ void SceneHome::BeginScene()
 	player->SetPosition(playerPos);
 	AddGameObject(OBJ_TYPE_PLAYER, player);
 
-	Wall* wall = new Wall;
-	wall->Initialize(m_engineCore, GetNumGameObject(OBJ_TYPE_WALL));
-	wall->SetScale(Vector3(1.0f, 1.0f, 0.5f));
-	wall->SetPosition(Vector3(0.0f, 0.0f, 2.0f));
-	AddGameObject(OBJ_TYPE_WALL, wall);
+	//Wall* wall = new Wall;
+	//wall->Initialize(m_engineCore, GetNumGameObject(OBJ_TYPE_WALL));
+	//wall->SetScale(Vector3(1.0f, 1.0f, 0.5f));
+	//wall->SetPosition(Vector3(0.0f, 0.0f, 2.0f));
+	//AddGameObject(OBJ_TYPE_WALL, wall);
 }
 
 void SceneHome::EndScene()
@@ -80,6 +80,13 @@ void SceneHome::Update(const float dt)
 			GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
 			if (gameObj[i][j])
 			{
+				Vector3 curPos = gameObj[i][j]->GetPosition();
+
+				m_terrain->IntersectObject(gameObj[i][j]->GetMyObject(), &height);
+
+				printf("%lf\n", height);
+
+				gameObj[i][j]->SetPosition(Vector3(curPos.x, height + 1.0f, curPos.z));
 				gameObj[i][j]->Update(dt);
 			}
 		}
