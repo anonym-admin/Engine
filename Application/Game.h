@@ -9,7 +9,7 @@ Game
 class Application;
 class Player;
 class SceneManager;
-class Editor;
+class EditorManager;
 
 class Game
 {
@@ -41,8 +41,11 @@ private:
 	SceneManager* m_sceneManager = nullptr;
 	uint64 m_prevTickCount = 0;
 
-	Editor* m_editor = nullptr;
-	bool m_isEditorMode = false;
-	bool m_isEidtorModeFirst = true;
+	EditorManager* m_editorManager = nullptr;
+	EDITOR_TYPE m_isEditorMode = EDITOR_TYPE_NONE;
+
+	bool m_isEidtorModeFirst[EDITOR_TYPE_NUM] = {};
+
+	IT_TextUI* m_sysInfoUI = nullptr;
 };
 

@@ -160,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="EasyMath.cpp" />
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="EditorArrange.cpp" />
+    <ClCompile Include="EditorGenerate.cpp" />
+    <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="Game.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -196,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="EasyMath.h" />
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="EditorArrange.h" />
+    <ClInclude Include="EditorGenerate.h" />
+    <ClInclude Include="EditorManager.h" />
     <ClInclude Include="Game.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -203,6 +209,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameType.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />

@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "Player.h"
 #include "SceneManager.h"
+#include "EditorManager.h"
 #include "Editor.h"
 
 /*
@@ -32,29 +33,38 @@ bool Game::InitGame(Application* app)
 	m_screenHeight = rect.bottom - rect.top;
 
 #if defined(EDITOR_MODE)
-	m_editor = new Editor;
-	m_editor->Initialize(this);
+	m_editorManager = new EditorManager;
+	m_editorManager->Initialize(this, 2);
+	memset(m_isEidtorModeFirst, true, EDITOR_TYPE_NUM);
 #endif
 
 	// Initialize scene.
 	m_sceneManager = new SceneManager;
 	m_sceneManager->Initialize(this, 8);
 
+	// System info.
+	m_sysInfoUI = m_engineCore->CreateTextUI(m_screenWidth, m_screenWidth / 16, 10, 10, 1.0f, 1.0f, 0.0f, L"Consolas", 14);
+
 	return true;
 }
 
 void Game::CleanUpGame()
 {
+	if (m_sysInfoUI)
+	{
+		m_sysInfoUI->Release();
+		m_sysInfoUI = nullptr;
+	}
 	if (m_sceneManager)
 	{
 		delete m_sceneManager;
 		m_sceneManager = nullptr;
 	}
 #if defined(EDITOR_MODE)
-	if (m_editor)
+	if (m_editorManager)
 	{
-		delete m_editor;
-		m_editor = nullptr;
+		delete m_editorManager;
+		m_editorManager = nullptr;
 	}
 #endif
 }
@@ -73,32 +83,41 @@ void Game::RunGame()
 
 void Game::Update(const float dt)
 {
+	Vector3 camPos = m_engineCore->GetCameraPosition();
+	Vector3 camDir = m_engineCore->GetCameraDirection();
+	wchar_t buf[256] = {};
+	swprintf_s(buf, L"fps:%d dt:%lf cam pos:[%lf %lf %lf] cam dir:[%lf %lf %lf]", m_engineCore->GetFps(), m_engineCore->GetDeltaTime(), camPos.x, camPos.y, camPos.z, camDir.x, camDir.y, camDir.z);
+	m_engineCore->WriteTextToUI(m_sysInfoUI, buf, FONT_COLOR_TYPE::SPRING_GREEN);
+
 	// F12 Button => Editor On/Off
 	if (m_engineCore->KeyboardDown(KEY_INPUT_F12))
 	{
-		m_isEditorMode = !m_isEditorMode;
+		m_isEditorMode = static_cast<EDITOR_TYPE>((m_isEditorMode + 1) % EDITOR_TYPE_NUM);
 	}
+
 	// Editor mode On
-	if (m_isEditorMode)
+	static Editor* editor = nullptr;
+	if (EDITOR_TYPE_NONE != m_isEditorMode)
 	{
-		if (m_isEidtorModeFirst)
+		if (m_isEidtorModeFirst[m_isEditorMode])
 		{
-			m_editor->BeginEditor();
-			m_isEidtorModeFirst = false;
+			m_editorManager->SetCurrentEditor(m_isEditorMode);
+			editor = m_editorManager->GetCurrentEditor();
+			m_isEidtorModeFirst[m_isEditorMode] = false;
 		}
-		m_editor->Update(dt);
+		m_editorManager->Update(dt);
 	}
 	else
 	{
-		if (!m_isEidtorModeFirst)
+		if (!m_isEidtorModeFirst[m_isEditorMode])
 		{
-			m_editor->EndEditor();
-			m_isEidtorModeFirst = true;
+			editor->EndEditor();
+			m_isEidtorModeFirst[m_isEditorMode] = true;
 		}
 	}
 
 	// Update scene.
-	if (!m_isEditorMode)
+	if (EDITOR_TYPE_NONE == m_isEditorMode)
 	{
 		m_sceneManager->Update(dt);
 	}
@@ -107,9 +126,11 @@ void Game::Update(const float dt)
 
 void Game::Render()
 {
-	if (m_isEditorMode)
+	m_engineCore->RenderTextUI(m_sysInfoUI);
+
+	if (EDITOR_TYPE_NONE != m_isEditorMode)
 	{
-		m_editor->Render();
+		m_editorManager->Render();
 	}
 
 	m_sceneManager->Render();

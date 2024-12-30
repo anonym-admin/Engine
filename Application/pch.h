@@ -12,6 +12,9 @@
 #include <windows.h>
 #include <time.h>
 
+// inner
+#include "GameType.h" 
+
 // my lib.
 #include "../../Common/MeshData.h"
 #include "../../Common/EngineType.h"

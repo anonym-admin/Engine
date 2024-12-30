@@ -25,11 +25,12 @@ public:
 
 private:
 	void CleanUp();
+	void UpdateCameraRotation();
+	void UpdateInput(const float dt);
 
 private:
 	Game* m_game = nullptr;
 	IT_EngineCore* m_engineCore = nullptr;
-	IT_TextUI* m_sysInfoUI = nullptr;
 	IT_Terrain* m_terrain = nullptr;
 };
 

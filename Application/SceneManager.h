@@ -1,11 +1,5 @@
 #pragma once
 
-enum SCENE_TYPE
-{
-	SCENE_TYPE_HOME,
-	SCENE_TYPE_NUM,
-};
-
 /*
 ==============
 SceneManager

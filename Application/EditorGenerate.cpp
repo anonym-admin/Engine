@@ -1,26 +1,26 @@
 #include "pch.h"
-#include "Editor.h"
+#include "EditorGenerate.h"
 #include "Game.h"
-#include "Scene.h"
 #include "SceneManager.h"
+#include "Scene.h"
 #include "Wall.h"
 
 /*
-========
-Editor
-========
+===============
+EditorGenerate
+===============
 */
 
-Editor::Editor()
+EditorGenerate::EditorGenerate()
 {
 }
 
-Editor::~Editor()
+EditorGenerate::~EditorGenerate()
 {
-	CleanUp();
+    CleanUp();
 }
 
-bool Editor::Initialize(Game* game)
+bool EditorGenerate::Initialize(Game* game)
 {
 	m_game = game;
 	m_engineCore = game->GetEngineCore();
@@ -28,12 +28,13 @@ bool Editor::Initialize(Game* game)
 	const uint32 screenWidth = m_game->GetScreenWidth();
 	const uint32 screenHeight = m_game->GetScreenHeight();
 	const uint32 offset = 10;
+
 	m_textUI = m_engineCore->CreateTextUI(256, 32, screenWidth - 128, offset, 1.0f, 1.0f, 0.0f, L"Consolas", 14);
 
 	return true;
 }
 
-void Editor::BeginEditor()
+void EditorGenerate::BeginEditor()
 {
 	m_engineCore = m_game->GetEngineCore();
 	SceneManager* sceneManger = m_game->GetSceneManager();
@@ -50,38 +51,23 @@ void Editor::BeginEditor()
 	m_engineCore->DisalbeFPV();
 }
 
-void Editor::EndEditor()
+void EditorGenerate::EndEditor()
 {
 	m_engineCore->SetCameraPosition(m_sceneCamPos);
 	m_engineCore->SetCameraDirection(m_sceneCamDir);
 }
 
-void Editor::Update(const float dt)
+void EditorGenerate::Update(const float dt)
 {
 	IT_Renderer* renderer = m_engineCore->GetRenderer();
 
 	wchar_t buf[256] = {};
-	swprintf_s(buf, L"Edit mode");
+	swprintf_s(buf, L"Edit Mode Generate");
 	m_engineCore->WriteTextToUI(m_textUI, buf, FONT_COLOR_TYPE::WHITE);
 
-	if (m_engineCore->KeyboardDown(KEY_INPUT_B))
-	{
-		Wall* wall = new Wall;
-		wall->Initialize(m_engineCore, m_curScene->GetNumGameObject(OBJ_TYPE_WALL));
-		wall->SetPosition(Vector3(-2.0f, 2.0f, 1.0f));
-		m_curScene->AddGameObject(OBJ_TYPE_WALL, wall);
-	}
-
-	m_isPicking = UpdateMousePicking();
-
-	if (m_isPicking)
-	{
-		return;
-	}
-
-	// Create building object.
 	DirectX::SimpleMath::Plane xzPlane = DirectX::SimpleMath::Plane(Vector3(0.0f, 1.0f, 0.0f), 0); // This plane is (y = 0) xz plane.
-
+	
+	// Create building object.
 	if (m_engineCore->LButtonDown())
 	{
 		m_wltPos = renderer->GetWorldPos(xzPlane, m_engineCore->GetNdcX(), m_engineCore->GetNdcY());
@@ -100,12 +86,12 @@ void Editor::Update(const float dt)
 	}
 }
 
-void Editor::Render()
+void EditorGenerate::Render()
 {
 	m_engineCore->RenderTextUI(m_textUI);
 }
 
-void Editor::CleanUp()
+void EditorGenerate::CleanUp()
 {
 	if (m_textUI)
 	{
@@ -114,7 +100,7 @@ void Editor::CleanUp()
 	}
 }
 
-void Editor::CreateBuilding()
+void EditorGenerate::CreateBuilding()
 {
 	// World 좌표로의 변환이 필요하다.
 	const float scaleX = abs(m_wltPos.x - m_wrbPos.x);
@@ -131,53 +117,4 @@ void Editor::CreateBuilding()
 	wall->SetScale(scale);
 	wall->SetPosition(position);
 	m_curScene->AddGameObject(OBJ_TYPE_WALL, wall);
-}
-
-GameObject* Editor::IsSelectedObject()
-{
-	GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = m_curScene->GetGameObject();
-	uint32 numWall = m_curScene->GetNumGameObject(GAME_OBJ_TYPE::OBJ_TYPE_WALL);
-
-	Wall* wall = nullptr;
-	for (uint32 i = 0; i < numWall; i++)
-	{
-		if (gameObj[OBJ_TYPE_WALL][i])
-		{
-			Wall* wall = reinterpret_cast<Wall*>(gameObj[OBJ_TYPE_WALL][i]);
-			if (m_engineCore->MousePicking(wall->GetMyObject()))
-			{
-				return wall;
-			}
-		}
-	}
-	return wall;
-}
-
-bool Editor::UpdateMousePicking()
-{
-	static GameObject* selected = nullptr;
-
-	if (m_engineCore->LButtonDown() || m_engineCore->RButtonDown())
-	{
-		if (!selected)
-		{
-			selected = IsSelectedObject();
-
-			if (selected)
-			{
-				Wall* wall = reinterpret_cast<Wall*>(selected);
-				wall->IsDrawMeshBoundingBox();
-			}
-		}
-		else
-		{
-
-		}
-	}
-	else
-	{
-		selected = nullptr;
-	}
-
-	return selected ? true : false;
 }

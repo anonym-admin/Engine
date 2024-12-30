@@ -30,9 +30,6 @@ bool SceneHome::Initialize(Game* game)
 
 void SceneHome::BeginScene()
 {
-	// System info.
-	m_sysInfoUI = m_engineCore->CreateTextUI(m_game->GetScreenWidth(), m_game->GetScreenHeight() / 16, 10, 10, 1.0f, 1.0f, 0.0f, L"Consolas", 14);
-
 	// Terrain.
 	m_terrain = m_engineCore->CreateTerrain(100.0f, nullptr);
 
@@ -64,12 +61,6 @@ void SceneHome::EndScene()
 
 void SceneHome::Update(const float dt)
 {
-	Vector3 camPos = m_engineCore->GetCameraPosition();
-	Vector3 camDir = m_engineCore->GetCameraDirection();
-	wchar_t buf[256] = {};
-	swprintf_s(buf, L"fps:%d dt:%lf cam pos:[%lf %lf %lf] cam dir:[%lf %lf %lf]", m_engineCore->GetFps(), m_engineCore->GetDeltaTime(), camPos.x, camPos.y, camPos.z, camDir.x, camDir.y, camDir.z);
-	m_engineCore->WriteTextToUI(m_sysInfoUI, buf, FONT_COLOR_TYPE::SPRING_GREEN);
-
 	float height = 0.0f;
 	float collisionRadius = 1.0f;
 	for (uint32 i = 0; i < OBJ_TYPE_NUM; i++)
@@ -81,51 +72,20 @@ void SceneHome::Update(const float dt)
 			if (gameObj[i][j])
 			{
 				Vector3 curPos = gameObj[i][j]->GetPosition();
-
 				m_terrain->IntersectObject(gameObj[i][j]->GetMyObject(), &height);
-
-				printf("%lf\n", height);
-
 				gameObj[i][j]->SetPosition(Vector3(curPos.x, height + 1.0f, curPos.z));
 				gameObj[i][j]->Update(dt);
 			}
 		}
 	}
 
-	GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
-	const float yaw = m_engineCore->GetNdcX() * DirectX::XM_PI;
-	const float pitch = m_engineCore->GetNdcY() * DirectX::XM_PI;
-	const Vector3 playerPos = gameObj[OBJ_TYPE_PLAYER][0]->GetPosition();
-	
-	Vector3 newCamPos = Vector3(0.0f, 0.0f, -5.0f);
-	Vector3 newCamDir = Vector3(0.0f, 0.0f, 1.0f);
-	newCamPos = Vector3::Transform(newCamPos, Matrix::CreateRotationY(yaw));
-	newCamDir = Vector3::Transform(newCamDir, Matrix::CreateRotationY(yaw));
-	newCamPos = newCamPos + playerPos;
-
-	m_engineCore->SetCameraPosition(newCamPos);
-	m_engineCore->SetCameraDirection(newCamDir);
-
-	camPos = m_engineCore->GetCameraPosition();
-	camDir = m_engineCore->GetCameraDirection();
-
-	Vector3 curPos = gameObj[OBJ_TYPE_PLAYER][0]->GetPosition();
-
-	if (m_engineCore->KeyboardHold(KEY_INPUT_W))
-	{
-		camPos += camDir * 1.0f * dt;
-		curPos += camDir * 1.0f * dt;
-	}
-	
-	m_engineCore->SetCameraPosition(camPos);
-	gameObj[OBJ_TYPE_PLAYER][0]->SetPosition(curPos);
+	UpdateCameraRotation();
+	UpdateInput(dt);
 }
 
 void SceneHome::Render()
 {
-	m_engineCore->RenderTextUI(m_sysInfoUI);
-
-	m_engineCore->RenderTerrain(m_terrain);
+	// m_engineCore->RenderTerrain(m_terrain);
 
 	for (uint32 i = 0; i < OBJ_TYPE_NUM; i++)
 	{
@@ -162,9 +122,63 @@ void SceneHome::CleanUp()
 		m_terrain->Release();
 		m_terrain = nullptr;
 	}
-	if (m_sysInfoUI)
+}
+
+void SceneHome::UpdateCameraRotation()
+{
+	GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
+
+	const float yaw = m_engineCore->GetNdcX() * DirectX::XM_PI;
+	const float pitch = m_engineCore->GetNdcY() * DirectX::XM_PI;
+	const Vector3 playerPos = gameObj[OBJ_TYPE_PLAYER][0]->GetPosition();
+
+	Vector3 newCamPos = Vector3(0.0f, 0.0f, -5.0f);
+	Vector3 newCamDir = Vector3(0.0f, 0.0f, 1.0f);
+	newCamPos = Vector3::Transform(newCamPos, Matrix::CreateRotationY(yaw));
+	newCamDir = Vector3::Transform(newCamDir, Matrix::CreateRotationY(yaw));
+	newCamPos = newCamPos + playerPos;
+
+	m_engineCore->SetCameraPosition(newCamPos);
+	m_engineCore->SetCameraDirection(newCamDir);
+
+	SetCameraPos(newCamPos);
+	SetCameraDir(newCamDir);
+}
+
+void SceneHome::UpdateInput(const float dt)
+{
+	const float moveSpeed = 1.5f;
+
+	GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
+
+	Vector3 camPos = m_engineCore->GetCameraPosition();
+	Vector3 camDir = m_engineCore->GetCameraDirection();
+	Vector3 camUp = Vector3(0.0f, 1.0f, 0.0f);
+	Vector3 camRight = camUp.Cross(camDir);
+	Vector3 curPos = gameObj[OBJ_TYPE_PLAYER][0]->GetPosition();
+
+	if (m_engineCore->KeyboardHold(KEY_INPUT_W))
 	{
-		m_sysInfoUI->Release();
-		m_sysInfoUI = nullptr;
+		camPos += camDir * moveSpeed * dt;
+		curPos += camDir * moveSpeed * dt;
 	}
+	if (m_engineCore->KeyboardHold(KEY_INPUT_S))
+	{
+		camPos -= camDir * moveSpeed * dt;
+		curPos -= camDir * moveSpeed * dt;
+	}
+	if (m_engineCore->KeyboardHold(KEY_INPUT_D))
+	{
+		camPos += camRight * moveSpeed * dt;
+		curPos += camRight * moveSpeed * dt;
+	}
+	if (m_engineCore->KeyboardHold(KEY_INPUT_A))
+	{
+		camPos -= camRight * moveSpeed * dt;
+		curPos -= camRight * moveSpeed * dt;
+	}
+
+	SetCameraPos(camPos);
+	m_engineCore->SetCameraPosition(camPos);
+	gameObj[OBJ_TYPE_PLAYER][0]->SetPosition(curPos);
 }

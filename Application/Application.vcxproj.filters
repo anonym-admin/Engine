@@ -63,6 +63,15 @@
     <ClCompile Include="Player.cpp">
       <Filter>Main\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="EditorArrange.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorGenerate.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorManager.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\Type.h">
@@ -118,6 +127,18 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Main\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorArrange.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorGenerate.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorManager.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="GameType.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

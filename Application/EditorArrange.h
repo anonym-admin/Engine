@@ -1,21 +1,21 @@
 #pragma once
 
+#include "Editor.h"
+
 /*
-========
-Editor
-========
+===============
+EditorArrange
+===============
 */
 
 class Game;
 class Scene;
-class SceneManger;
-class GameObject;
 
-class Editor
+class EditorArrange : public Editor
 {
 public:
-	Editor();
-	virtual ~Editor();
+	EditorArrange();
+	virtual ~EditorArrange();
 
 	bool Initialize(Game* game);
 	virtual void BeginEditor();
@@ -25,25 +25,15 @@ public:
 
 private:
 	void CleanUp();
-	void CreateBuilding();
 	GameObject* IsSelectedObject();
 	bool UpdateMousePicking();
 
 private:
 	Game* m_game = nullptr;
+	Scene* m_curScene = nullptr;
 	IT_EngineCore* m_engineCore = nullptr;
 	IT_TextUI* m_textUI = nullptr;
-	Scene* m_curScene = nullptr;
 	Vector3 m_sceneCamPos = Vector3(0.0f);
 	Vector3 m_sceneCamDir = Vector3(0.0f, 0.0f, 1.0f);
-
-
-
-
-	Vector3 m_wltPos = Vector3(0.0f);
-	Vector3 m_wrbPos = Vector3(0.0f);
-
-
-	bool m_isPicking = false;
 };
 
