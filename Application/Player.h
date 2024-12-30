@@ -29,5 +29,6 @@ private:
 private:
 	IT_EngineCore* m_engineCore = nullptr;
 	IT_CharacterObject* m_characterObj = nullptr;
+	float m_moveSpeed = 1.0f;
 };
 

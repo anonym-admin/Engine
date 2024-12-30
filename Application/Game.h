@@ -9,6 +9,7 @@ Game
 class Application;
 class Player;
 class SceneManager;
+class Editor;
 
 class Game
 {
@@ -20,6 +21,7 @@ public:
 	void RunGame();
 
 	IT_EngineCore* GetEngineCore() { return m_engineCore; }
+	SceneManager* GetSceneManager() { return m_sceneManager; }
 	uint32 GetScreenWidth() { return m_screenWidth; }
 	uint32 GetScreenHeight() { return m_screenHeight; }
 
@@ -38,5 +40,9 @@ private:
 
 	SceneManager* m_sceneManager = nullptr;
 	uint64 m_prevTickCount = 0;
+
+	Editor* m_editor = nullptr;
+	bool m_isEditorMode = false;
+	bool m_isEidtorModeFirst = true;
 };
 

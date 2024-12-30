@@ -26,6 +26,7 @@ public:
 	void Render();
 
 	void SetCurrentScene(SCENE_TYPE type) { m_curScene = m_sceneGraph[type]; }
+	Scene* GetCurrentScene() { return m_curScene; }
 
 private:
 	void CleanUp();

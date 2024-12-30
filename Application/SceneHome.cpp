@@ -36,22 +36,26 @@ void SceneHome::BeginScene()
 	// Terrain.
 	m_terrain = m_engineCore->CreateTerrain(50.0f, nullptr);
 
+	Vector3 playerPos = Vector3(0.0f, 0.0f, -1.0f);
+	Vector3 camPos = playerPos - Vector3(0.0f, 0.0f, 5.0f);
+	Vector3 camDir = Vector3(0.0f, 0.0f, 1.0f);
+	SetCameraPos(camPos);
+	SetCameraDir(camDir);
+
+	m_engineCore->SetCameraPosition(camPos);
+	m_engineCore->SetCameraDirection(camDir);
+
 	// Game object.
 	Player* player = new Player;
 	player->Initialize(m_engineCore);
-	player->SetPosition(Vector3(-2.0f, 0.0f, 0.0f));
-	m_gameObjList[OBJ_TYPE_PLAYER][m_numGameObjList[OBJ_TYPE_PLAYER]++] = player;
-
-	Monster* monster = new Monster;
-	monster->Initialize(m_engineCore);
-	monster->SetPosition(Vector3(2.0f, 0.0f, 0.0f));
-	m_gameObjList[OBJ_TYPE_MONSTER][m_numGameObjList[OBJ_TYPE_MONSTER]++] = monster;
+	player->SetPosition(playerPos);
+	AddGameObject(OBJ_TYPE_PLAYER, player);
 
 	Wall* wall = new Wall;
-	wall->Initialize(m_engineCore);
+	wall->Initialize(m_engineCore, GetNumGameObject(OBJ_TYPE_WALL));
 	wall->SetScale(Vector3(1.0f, 1.0f, 0.5f));
 	wall->SetPosition(Vector3(0.0f, 0.0f, 2.0f));
-	m_gameObjList[OBJ_TYPE_WALL][m_numGameObjList[OBJ_TYPE_WALL]++] = wall;
+	AddGameObject(OBJ_TYPE_WALL, wall);
 }
 
 void SceneHome::EndScene()
@@ -60,24 +64,54 @@ void SceneHome::EndScene()
 
 void SceneHome::Update(const float dt)
 {
-	Vector3 camPos = m_engineCore->GetCameraPos();
+	Vector3 camPos = m_engineCore->GetCameraPosition();
+	Vector3 camDir = m_engineCore->GetCameraDirection();
 	wchar_t buf[256] = {};
-	swprintf_s(buf, L"fps:%d dt:%lf cam:[%.2lf,%.2lf,%.2lf]", m_engineCore->GetFps(), m_engineCore->GetDeltaTime(), camPos.x, camPos.y, camPos.z);
-
+	swprintf_s(buf, L"fps:%d dt:%lf cam pos:[%lf %lf %lf] cam dir:[%lf %lf %lf]", m_engineCore->GetFps(), m_engineCore->GetDeltaTime(), camPos.x, camPos.y, camPos.z, camDir.x, camDir.y, camDir.z);
 	m_engineCore->WriteTextToUI(m_sysInfoUI, buf, FONT_COLOR_TYPE::SPRING_GREEN);
 
 	float height = 0.0f;
 	float collisionRadius = 1.0f;
 	for (uint32 i = 0; i < OBJ_TYPE_NUM; i++)
 	{
-		for (uint32 j = 0; j < m_numGameObjList[i]; j++)
+		uint32 numGameObj = GetNumGameObject(GAME_OBJ_TYPE(i));
+		for (uint32 j = 0; j < numGameObj; j++)
 		{
-			if (m_gameObjList[i][j])
+			GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
+			if (gameObj[i][j])
 			{
-				m_gameObjList[i][j]->Update(dt);
+				gameObj[i][j]->Update(dt);
 			}
 		}
 	}
+
+	GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
+	const float yaw = m_engineCore->GetNdcX() * DirectX::XM_PI;
+	const float pitch = m_engineCore->GetNdcY() * DirectX::XM_PI;
+	const Vector3 playerPos = gameObj[OBJ_TYPE_PLAYER][0]->GetPosition();
+	
+	Vector3 newCamPos = Vector3(0.0f, 0.0f, -5.0f);
+	Vector3 newCamDir = Vector3(0.0f, 0.0f, 1.0f);
+	newCamPos = Vector3::Transform(newCamPos, Matrix::CreateRotationY(yaw));
+	newCamDir = Vector3::Transform(newCamDir, Matrix::CreateRotationY(yaw));
+	newCamPos = newCamPos + playerPos;
+
+	m_engineCore->SetCameraPosition(newCamPos);
+	m_engineCore->SetCameraDirection(newCamDir);
+
+	camPos = m_engineCore->GetCameraPosition();
+	camDir = m_engineCore->GetCameraDirection();
+
+	Vector3 curPos = gameObj[OBJ_TYPE_PLAYER][0]->GetPosition();
+
+	if (m_engineCore->KeyboardHold(KEY_INPUT_W))
+	{
+		camPos += camDir * 1.0f * dt;
+		curPos += camDir * 1.0f * dt;
+	}
+	
+	m_engineCore->SetCameraPosition(camPos);
+	gameObj[OBJ_TYPE_PLAYER][0]->SetPosition(curPos);
 }
 
 void SceneHome::Render()
@@ -88,11 +122,14 @@ void SceneHome::Render()
 
 	for (uint32 i = 0; i < OBJ_TYPE_NUM; i++)
 	{
-		for (uint32 j = 0; j < m_numGameObjList[i]; j++)
+		uint32 numGameObj = GetNumGameObject(GAME_OBJ_TYPE(i));
+		for (uint32 j = 0; j < numGameObj; j++)
 		{
-			if (m_gameObjList[i][j])
+			GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
+			if (gameObj[i][j])
 			{
-				m_gameObjList[i][j]->Render();
+				gameObj[i][j]->SetWire(true);
+				gameObj[i][j]->Render();
 			}
 		}
 	}
@@ -102,12 +139,14 @@ void SceneHome::CleanUp()
 {
 	for (uint32 i = 0; i < OBJ_TYPE_NUM; i++)
 	{
-		for (uint32 j = 0; j < m_numGameObjList[i]; j++)
+		uint32 numGameObj = GetNumGameObject(GAME_OBJ_TYPE(i));
+		for (uint32 j = 0; j < numGameObj; j++)
 		{
-			if (m_gameObjList[i][j])
+			GameObject* (*gameObj)[Scene::MAX_NUM_GAME_OBJ] = GetGameObject();
+			if (gameObj[i][j])
 			{
-				delete m_gameObjList[i][j];
-				m_gameObjList[i][j] = nullptr;
+				delete gameObj[i][j];
+				gameObj[i][j] = nullptr;
 			}
 		}
 	}

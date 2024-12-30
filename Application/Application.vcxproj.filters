@@ -16,6 +16,9 @@
     <Filter Include="Interface">
       <UniqueIdentifier>{b96da30d-b443-4788-a845-d68ef089a734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\GameObject">
+      <UniqueIdentifier>{5f8f818d-afa1-4582-8c14-13d22cbbf31c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainEntry.cpp">
@@ -45,13 +48,19 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="Monster.cpp">
+    <ClCompile Include="Editor.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="Wall.cpp">
-      <Filter>Main</Filter>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Main\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
+      <Filter>Main\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>Main\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraController.cpp">
       <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,12 +101,23 @@
     <ClInclude Include="SceneManager.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="Monster.h">
+    <ClInclude Include="Editor.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Main\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Main\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Wall.h">
+      <Filter>Main\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="..\..\Common\EngineType.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

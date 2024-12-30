@@ -14,7 +14,7 @@ public:
 	Wall();
 	~Wall();
 
-	bool Initialize(IT_EngineCore* engineCore);
+	bool Initialize(IT_EngineCore* engineCore, uint32 ctxIndex);
 	virtual void Update(const float dt) override;
 	virtual void Render() override;
 
@@ -23,11 +23,15 @@ public:
 	virtual void SetPosition(Vector3 pos) override;
 	IT_BuildingObject* GetMyObject() { return m_buildingObj; }
 
+	void UpdateMousePicking();
+	void IsDrawMeshBoundingBox();
+
 private:
 	void CleanUp();
 
 private:
 	IT_EngineCore* m_engineCore = nullptr;
 	IT_BuildingObject* m_buildingObj = nullptr;
+	bool m_drawMeshBoundingBox = false;
 };
 
