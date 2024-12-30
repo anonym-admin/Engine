@@ -19,6 +19,12 @@
     <Filter Include="Main\GameObject">
       <UniqueIdentifier>{5f8f818d-afa1-4582-8c14-13d22cbbf31c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Editor">
+      <UniqueIdentifier>{da9ef3a1-7563-4434-a962-ca3645766058}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Scene">
+      <UniqueIdentifier>{1b3e422f-af38-476f-86be-8ffe714b6526}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainEntry.cpp">
@@ -36,18 +42,6 @@
     <ClCompile Include="EasyMath.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneHome.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="Monster.cpp">
       <Filter>Main\GameObject</Filter>
     </ClCompile>
@@ -63,14 +57,26 @@
     <ClCompile Include="Player.cpp">
       <Filter>Main\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Main\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneHome.cpp">
+      <Filter>Main\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Main\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor.cpp">
+      <Filter>Main\Editor</Filter>
+    </ClCompile>
     <ClCompile Include="EditorArrange.cpp">
-      <Filter>Main</Filter>
+      <Filter>Main\Editor</Filter>
     </ClCompile>
     <ClCompile Include="EditorGenerate.cpp">
-      <Filter>Main</Filter>
+      <Filter>Main\Editor</Filter>
     </ClCompile>
     <ClCompile Include="EditorManager.cpp">
-      <Filter>Main</Filter>
+      <Filter>Main\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,18 +104,6 @@
     <ClInclude Include="..\..\Interface\IT_EngineCore.h">
       <Filter>Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneHome.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="Monster.h">
       <Filter>Main\GameObject</Filter>
     </ClInclude>
@@ -128,17 +122,29 @@
     <ClInclude Include="Player.h">
       <Filter>Main\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="EditorArrange.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorGenerate.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorManager.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="GameType.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneHome.h">
+      <Filter>Main\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Main\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Main\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor.h">
+      <Filter>Main\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorArrange.h">
+      <Filter>Main\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorGenerate.h">
+      <Filter>Main\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorManager.h">
+      <Filter>Main\Editor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

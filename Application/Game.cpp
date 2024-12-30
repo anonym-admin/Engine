@@ -36,6 +36,7 @@ bool Game::InitGame(Application* app)
 	m_editorManager = new EditorManager;
 	m_editorManager->Initialize(this, 2);
 	memset(m_isEidtorModeFirst, true, EDITOR_TYPE_NUM);
+	m_prevEditorMode = EDITOR_TYPE_NUM;
 #endif
 
 	// Initialize scene.
@@ -92,32 +93,33 @@ void Game::Update(const float dt)
 	// F12 Button => Editor On/Off
 	if (m_engineCore->KeyboardDown(KEY_INPUT_F12))
 	{
-		m_isEditorMode = static_cast<EDITOR_TYPE>((m_isEditorMode + 1) % EDITOR_TYPE_NUM);
+		m_curEidtorMode = static_cast<EDITOR_TYPE>((m_curEidtorMode + 1) % EDITOR_TYPE_NUM);
 	}
 
 	// Editor mode On
 	static Editor* editor = nullptr;
-	if (EDITOR_TYPE_NONE != m_isEditorMode)
+	if (EDITOR_TYPE_NONE != m_curEidtorMode && m_prevEditorMode == m_curEidtorMode)
 	{
-		if (m_isEidtorModeFirst[m_isEditorMode])
+		if (m_isEidtorModeFirst[m_curEidtorMode])
 		{
-			m_editorManager->SetCurrentEditor(m_isEditorMode);
+			m_editorManager->SetCurrentEditor(m_curEidtorMode);
 			editor = m_editorManager->GetCurrentEditor();
-			m_isEidtorModeFirst[m_isEditorMode] = false;
+			m_isEidtorModeFirst[m_curEidtorMode] = false;
 		}
 		m_editorManager->Update(dt);
 	}
 	else
 	{
-		if (!m_isEidtorModeFirst[m_isEditorMode])
+		if (!m_isEidtorModeFirst[m_curEidtorMode])
 		{
 			editor->EndEditor();
-			m_isEidtorModeFirst[m_isEditorMode] = true;
+			m_isEidtorModeFirst[m_curEidtorMode] = true;
 		}
+		m_prevEditorMode = m_curEidtorMode;
 	}
 
 	// Update scene.
-	if (EDITOR_TYPE_NONE == m_isEditorMode)
+	if (EDITOR_TYPE_NONE == m_curEidtorMode)
 	{
 		m_sceneManager->Update(dt);
 	}
@@ -128,7 +130,7 @@ void Game::Render()
 {
 	m_engineCore->RenderTextUI(m_sysInfoUI);
 
-	if (EDITOR_TYPE_NONE != m_isEditorMode)
+	if (EDITOR_TYPE_NONE != m_curEidtorMode)
 	{
 		m_editorManager->Render();
 	}

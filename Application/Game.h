@@ -42,8 +42,8 @@ private:
 	uint64 m_prevTickCount = 0;
 
 	EditorManager* m_editorManager = nullptr;
-	EDITOR_TYPE m_isEditorMode = EDITOR_TYPE_NONE;
-
+	EDITOR_TYPE m_curEidtorMode = EDITOR_TYPE_NONE;
+	EDITOR_TYPE m_prevEditorMode = EDITOR_TYPE_NUM;
 	bool m_isEidtorModeFirst[EDITOR_TYPE_NUM] = {};
 
 	IT_TextUI* m_sysInfoUI = nullptr;

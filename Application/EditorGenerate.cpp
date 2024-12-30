@@ -109,10 +109,51 @@ void EditorGenerate::CreateBuilding()
 	const float centerX = (m_wltPos.x + m_wrbPos.x) * 0.5f;
 	const float centerZ = (m_wltPos.z + m_wrbPos.z) * 0.5f;
 
-	Vector3 scale = Vector3(scaleX, 3.0f, scaleZ);
+	Vector3 scale = Vector3(scaleX, 0.15f, scaleZ);
 	Vector3 position = Vector3(centerX, 0.0f, centerZ);
 
+	// ¹Ù´Ú
+	Wall* floor = new Wall;
+	floor->Initialize(m_engineCore, m_curScene->GetNumGameObject(OBJ_TYPE_WALL));
+	floor->SetScale(scale);
+	floor->SetPosition(position);
+	m_curScene->AddGameObject(OBJ_TYPE_WALL, floor);
+
+	// ¿À¸¥ÂÊ
+	scale = Vector3(0.15f, 3.0f, scaleZ);
+	position = Vector3(centerX - scaleX / 2.0f + 0.15f / 2.0f, 1.5f, centerZ);
+
 	Wall* wall = new Wall;
+	wall->Initialize(m_engineCore, m_curScene->GetNumGameObject(OBJ_TYPE_WALL));
+	wall->SetScale(scale);
+	wall->SetPosition(position);
+	m_curScene->AddGameObject(OBJ_TYPE_WALL, wall);
+
+	// ¿ÞÂÊ
+	scale = Vector3(0.15f, 3.0f, scaleZ);
+	position = Vector3(centerX + scaleX / 2.0f - 0.15f / 2.0f, 1.5f, centerZ);
+
+	wall = new Wall;
+	wall->Initialize(m_engineCore, m_curScene->GetNumGameObject(OBJ_TYPE_WALL));
+	wall->SetScale(scale);
+	wall->SetPosition(position);
+	m_curScene->AddGameObject(OBJ_TYPE_WALL, wall);
+
+	// ¾Õ¸é
+	scale = Vector3(scaleX, 3.0f, 0.15f);
+	position = Vector3(centerX, 1.5f, centerZ - scaleZ / 2.0f + 0.15f / 2.0f);
+
+	wall = new Wall;
+	wall->Initialize(m_engineCore, m_curScene->GetNumGameObject(OBJ_TYPE_WALL));
+	wall->SetScale(scale);
+	wall->SetPosition(position);
+	m_curScene->AddGameObject(OBJ_TYPE_WALL, wall);
+
+	// µÞ¸é
+	scale = Vector3(scaleX, 3.0f, 0.15f);
+	position = Vector3(centerX, 1.5f, centerZ + scaleZ / 2.0f - 0.15f / 2.0f);
+
+	wall = new Wall;
 	wall->Initialize(m_engineCore, m_curScene->GetNumGameObject(OBJ_TYPE_WALL));
 	wall->SetScale(scale);
 	wall->SetPosition(position);

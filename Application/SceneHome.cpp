@@ -73,7 +73,7 @@ void SceneHome::Update(const float dt)
 			{
 				Vector3 curPos = gameObj[i][j]->GetPosition();
 				m_terrain->IntersectObject(gameObj[i][j]->GetMyObject(), &height);
-				gameObj[i][j]->SetPosition(Vector3(curPos.x, height + 1.0f, curPos.z));
+				//gameObj[i][j]->SetPosition(Vector3(curPos.x, height + 1.0f, curPos.z));
 				gameObj[i][j]->Update(dt);
 			}
 		}
